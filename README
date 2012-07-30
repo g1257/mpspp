@@ -1,0 +1,3 @@
+The MPS++ computer program simulates models of strongly correlated quantum lattice systems. The algorithm used is the density-matrix renormalization group group formulated in the matrix product state language. These models and methods are used to obtain ground state, dynamic, finite temperature, and time evolution properties of the underlying materials being simulated. These materials are usually one- and quasi-one dimensional strongly correlated electronic systems, such as Mott insulators, high-temperature superconductors, manganites and other transition metal oxides. 
+
+
