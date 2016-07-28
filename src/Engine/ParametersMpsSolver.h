@@ -419,43 +419,43 @@ struct ParametersMpsSolver {
 
 };
 
-//! print dmrg p
-template<typename RealType,typename ComplexOrRealType,typename InputValidatorType>
-std::ostream &operator<<(std::ostream &os,
-                         ParametersMpsSolver<RealType,
-                         ComplexOrRealType,
-                         InputValidatorType> const &p)
-{
-	os<<"#This is MPS++\n";
-	Provenance provenance;
-	os<<provenance;
-	os<<"p.version="<<p.version<<"\n";
-	os<<"p.model="<<p.model<<"\n";
-	os<<"p.filename="<<p.filename<<"\n";
-	os<<"p.options="<<p.options<<"\n";
-	os<<"p.keptStatesInfinite="<<p.keptStatesInfinite<<"\n";
-	os<<"finiteLoop\n";
-	os<<p.finiteLoop;
+////! print dmrg p
+//template<typename RealType,typename ComplexOrRealType,typename InputValidatorType>
+//std::ostream &operator<<(std::ostream &os,
+//                         ParametersMpsSolver<RealType,
+//                         ComplexOrRealType,
+//                         InputValidatorType> const &p)
+//{
+//	os<<"#This is MPS++\n";
+//	Provenance provenance;
+//	os<<provenance;
+//	os<<"p.version="<<p.version<<"\n";
+//	os<<"p.model="<<p.model<<"\n";
+//	os<<"p.filename="<<p.filename<<"\n";
+//	os<<"p.options="<<p.options<<"\n";
+//	os<<"p.keptStatesInfinite="<<p.keptStatesInfinite<<"\n";
+//	os<<"finiteLoop\n";
+//	os<<p.finiteLoop;
 
-	if (p.targetQuantumNumbers.size()>0) {
-		os<<"p.targetQuantumNumbers=";
-		for (SizeType i=0;i<p.targetQuantumNumbers.size();i++)
-			os<<p.targetQuantumNumbers[i]<<" ";
-		os<<"\n";
-	} else {
-		os<<"p.electronsUp="<<p.electronsUp<<"\n";
-		os<<"p.electronsDown="<<p.electronsDown<<"\n";
-	}
-	if (p.tolerance>0)
-		os<<"p.tolerance="<<p.tolerance<<"\n";
-	os<<"p.nthreads="<<p.nthreads<<"\n";
-	os<<"p.useReflectionSymmetry="<<p.useReflectionSymmetry<<"\n";
-	if (p.checkpoint.filename!="")
-		os<<"p.restartFilename="<<p.checkpoint.filename<<"\n";
-	if (p.fileForDensityMatrixEigs!="")
-		os<<"p.fileForDensityMatrixEigs="<<p.fileForDensityMatrixEigs<<"\n";
-	return os;
-}
+//	if (p.targetQuantumNumbers.size()>0) {
+//		os<<"p.targetQuantumNumbers=";
+//		for (SizeType i=0;i<p.targetQuantumNumbers.size();i++)
+//			os<<p.targetQuantumNumbers[i]<<" ";
+//		os<<"\n";
+//	} else {
+//		os<<"p.electronsUp="<<p.electronsUp<<"\n";
+//		os<<"p.electronsDown="<<p.electronsDown<<"\n";
+//	}
+//	if (p.tolerance>0)
+//		os<<"p.tolerance="<<p.tolerance<<"\n";
+//	os<<"p.nthreads="<<p.nthreads<<"\n";
+//	os<<"p.useReflectionSymmetry="<<p.useReflectionSymmetry<<"\n";
+//	if (p.checkpoint.filename!="")
+//		os<<"p.restartFilename="<<p.checkpoint.filename<<"\n";
+//	if (p.fileForDensityMatrixEigs!="")
+//		os<<"p.fileForDensityMatrixEigs="<<p.fileForDensityMatrixEigs<<"\n";
+//	return os;
+//}
 } // namespace Dmrg
 /*@}*/
 

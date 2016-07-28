@@ -66,8 +66,8 @@ public:
 	typedef typename ModelType::ReflectionSymmetryType ReflectionSymmetryType;
 
 	InternalProductOnTheFly(ModelType const *model,
-	                        ModelHelperType const *modelHelper,
-	                        ReflectionSymmetryType* rs=0)
+							ModelHelperType const *modelHelper,
+							ReflectionSymmetryType* rs=0)
 	{
 		model_ = model;
 		modelHelper_=modelHelper;
@@ -81,16 +81,12 @@ public:
 		model_->matrixVectorProduct(x,y,*modelHelper_);
 	}
 
-	SizeType reflectionSector() const { return 0; }
-
-	void reflectionSector(SizeType p) {  }
-
 private:
 
 	ModelType const *model_;
 	ModelHelperType const *modelHelper_;
 }; // class InternalProductOnTheFly
-} // namespace Mpspp
+}  // namespace Mpspp
 
 /*@}*/
 #endif

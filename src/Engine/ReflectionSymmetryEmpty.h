@@ -53,8 +53,8 @@ class ReflectionSymmetryEmpty {
 public:
 
 	void transform(SparseMatrixType&,
-	               SparseMatrixType&,
-	               const SparseMatrixType&) const
+				   SparseMatrixType&,
+				   const SparseMatrixType&) const
 	{
 		PsimagLite::String str(__FILE__);
 		str += " " + ttos(__LINE__) + "\n";

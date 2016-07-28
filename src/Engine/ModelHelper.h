@@ -92,13 +92,13 @@ public:
 		return symmetry_.symmLocal()(siteForSymm_).super().partitionSize(symmetrySector_);
 	}
 
-	SizeType symmetrySector() const { return symmetrySector_; }
+//	SizeType symmetrySector() const { return symmetrySector_; }
 
-	SizeType hilbertSize() const { return hamiltonian_(0,0).row(); }
+//	SizeType hilbertSize() const { return hamiltonian_(0,0).row(); }
 
-	const MpoFactorType& hamiltonian() const { return hamiltonian_; }
+//	const MpoFactorType& hamiltonian() const { return hamiltonian_; }
 
-	const SymmetryFactorType& symmetry() const { return symmetry_; }
+//	const SymmetryFactorType& symmetry() const { return symmetry_; }
 
 	//! Eq. (201) but very modified
 	void matrixVectorProduct(VectorType& x,const VectorType& y) const

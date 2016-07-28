@@ -120,14 +120,10 @@ public:
 		matrixStored_[pointer_].matrixVectorProduct(x,y);
 	}
 
-	HamiltonianElementType operator()(SizeType i,SizeType j) const
-	{
-		return matrixStored_[pointer_](i,j);
-	}
-
-	SizeType reflectionSector() const { return pointer_; }
-
-	void reflectionSector(SizeType p) { pointer_=p; }
+//	HamiltonianElementType operator()(SizeType i,SizeType j) const
+//	{
+//		return matrixStored_[pointer_](i,j);
+//	}
 
 private:
 	ModelType const *model_;

@@ -105,22 +105,6 @@ public:
 			B_.push_back(mpsFactor);
 		}
 
-
-	void grow(SizeType currentSite,const SymmetryLocalType& symm,SizeType nk)
-	{
-		center_ = currentSite;
-
-		MpsFactorType* mpsFactor = new MpsFactorType(MpsFactorType::TYPE_B);
-		SizeType n = symm(currentSite+1).right().size();
-		mpsFactor->setRandom(currentSite,n);
-		B_.push_back(mpsFactor);
-
-		MpsFactorType* mpsFactor2 = new MpsFactorType(MpsFactorType::TYPE_A);
-		n =  symm(currentSite+1).left().size();
-		mpsFactor2->setRandom(currentSite,n);
-		A_.push_back(mpsFactor2);
-	}
-
 	//! Returns the number of sites
 	SizeType sites() const
 	{
@@ -192,147 +176,7 @@ public:
 		return *(B_[site]);
 	}
 
-	RealType norm(SizeType type,const SymmetryLocalType& symm) const
-	{
-		if (type==MpsFactorType::TYPE_B) {
-			return normB(symm);
-		}
-		return normA(symm);
-	}
-
-	template<typename ComplexOrRealType2,typename SymmetryLocalType2>
-	friend std::ostream& operator<<(std::ostream& os,
-	                                const MpsLocal<ComplexOrRealType2,SymmetryLocalType2>& mps);
-
 private:
-
-	RealType normB(const SymmetryLocalType& symm) const
-	{
-		MatrixType tmpOld;
-
-		for (SizeType i=0;i<B_.size();i++) {
-			SizeType center = B_.size()-1-i;
-			MatrixType tmpNew;
-			computeIntermediate(tmpNew,tmpOld,center,symm);
-			tmpOld = tmpNew;
-		}
-
-		ComplexOrRealType sum = 0;
-		for (SizeType i=0;i<tmpOld.n_row();i++) {
-			for (SizeType j=0;j<tmpOld.n_col();j++) {
-				sum += tmpOld(i,j);
-			}
-		}
-		return std::real(sum);
-	}
-
-	void computeIntermediate(MatrixType& matrixNew,
-	                         const MatrixType& matrixOld,
-	                         SizeType center,
-	                         const SymmetryLocalType& symmLocal) const
-	{
-		const SparseMatrixType& Bmatrix = B_[center]->operator()();
-		SparseMatrixType Btranspose;
-		transposeConjugate(Btranspose,Bmatrix);
-
-		matrixNew.resize(Bmatrix.row(),Bmatrix.row());
-		matrixNew.setTo(0.0);
-
-		if (matrixOld.n_row()==0) {
-			assert(center+1==B_.size());
-			for (SizeType x=0;x<Bmatrix.row();x++) {
-				for (int k=Bmatrix.getRowPtr(x);k<Bmatrix.getRowPtr(x+1);k++) {
-					SizeType sigma = Bmatrix.getCol(k);
-					for (int k2=Btranspose.getRowPtr(sigma);
-					     k2<Btranspose.getRowPtr(sigma+1);
-					     k2++) {
-						SizeType y = Btranspose.getCol(k2);
-						matrixNew(x,y) += Bmatrix.getValue(k)*
-						        std::conj(Btranspose.getValue(k2));
-					}
-				}
-			}
-
-			return;
-		}
-
-		const SymmetryFactorType& symm = symmLocal(center);
-		for (SizeType anm2=0;anm2<Bmatrix.row();anm2++) {
-			for (int k=Bmatrix.getRowPtr(anm2);k<Bmatrix.getRowPtr(anm2+1);k++) {
-				PairType p = symm.right().unpack(Bmatrix.getCol(k));
-				SizeType sigmanm2=p.first;
-				SizeType anm1=p.second;
-				for (SizeType apnm1=0;apnm1<matrixOld.n_row();apnm1++) {
-					SizeType x = symm.right().pack(sigmanm2,apnm1);
-					for (int k2=Btranspose.getRowPtr(x);k2<Btranspose.getRowPtr(x+1);k2++) {
-						SizeType apnm2 = Btranspose.getCol(k2);
-						matrixNew(anm2,apnm2) += matrixOld(anm1,apnm1)*
-						        Bmatrix.getValue(k)*Btranspose.getValue(k2);
-					} // k2
-				} // apnm1
-			} // k
-		} // anm2
-	}
-
-	RealType normA(const SymmetryLocalType& symm) const
-	{
-		MatrixType tmpOld;
-
-		for (SizeType i=0;i<A_.size();i++) {
-			SizeType center = i;
-			MatrixType tmpNew;
-			computeIntermediateA(tmpNew,tmpOld,center,symm);
-			tmpOld = tmpNew;
-		}
-
-		ComplexOrRealType sum = 0;
-		for (SizeType i=0;i<tmpOld.n_row();i++) {
-			for (SizeType j=0;j<tmpOld.n_col();j++) {
-				sum += tmpOld(i,j);
-			}
-		}
-		return std::real(sum);
-	}
-
-	void computeIntermediateA(MatrixType& matrixNew,
-	                          const MatrixType& matrixOld,
-	                          SizeType center,
-	                          const SymmetryLocalType& symmLocal) const
-	{
-		const SymmetryFactorType& symm = symmLocal(center+1);
-		SizeType leftSize = symm.left().split();
-		SizeType leftSize2 = symm.left().size();
-
-		SparseMatrixType Atranspose;
-		transposeConjugate(Atranspose,A_[center]->operator()());
-		matrixNew.resize(leftSize*leftSize,leftSize2*leftSize2);
-		matrixNew.setTo(0.0);
-		assert(Atranspose.row()==symm.left().size());
-		for (SizeType a1=0;a1<Atranspose.row();a1++) {
-			for (int k1=Atranspose.getRowPtr(a1);k1<Atranspose.getRowPtr(a1+1);k1++) {
-				PairType a0sigma1=symm.left().unpack(Atranspose.getCol(k1));
-				SizeType a0 = a0sigma1.first;
-				SizeType sigma1= a0sigma1.second;
-				for (SizeType a1p=0;a1p<Atranspose.row();a1p++) {
-					for (int k2=Atranspose.getRowPtr(a1p);
-					     k2<Atranspose.getRowPtr(a1p+1);
-					     k2++) {
-
-						PairType a0sigma1p=symm.left().unpack(Atranspose.getCol(k2));
-						SizeType a0p = a0sigma1p.first;
-						SizeType sigma1p= a0sigma1p.second;
-						if (sigma1!=sigma1p) continue;
-						matrixNew(a0+a0p*leftSize,a1+a1p*leftSize2) +=
-						        Atranspose.getValue(k1)*std::conj(Atranspose.getValue(k2));
-					} // k2
-				} // a1p
-			} // k1
-		} // a1
-
-		if (matrixOld.n_row()==0) return;
-		MatrixType m = matrixOld * matrixNew;
-		matrixNew = m;
-	}
 
 	// copy ctor:
 	MpsLocal(const MpsLocal& other);
@@ -347,23 +191,121 @@ private:
 	typename PsimagLite::Vector<MpsFactorType*>::Type A_;
 }; // MpsLocal
 
-template<typename ComplexOrRealType,typename SymmetryLocalType>
-std::ostream& operator<<(std::ostream& os,
-                         const MpsLocal<ComplexOrRealType,SymmetryLocalType>& mps)
-{
-	os<<"nsites= "<<mps.nsites_<<" center="<<mps.center_;
-	os<<"A_.size= "<<mps.A_.size()<<"\n";
-	for (SizeType i=0;i<mps.A_.size();i++)
-		os<<*(mps.A_[i]);
-	os<<"B_.size= "<<mps.B_.size()<<"\n";
-	for (SizeType i=0;i<mps.B_.size();i++)
-		os<<*(mps.B_[i]);
-	os<<"\n";
-	return os;
-}
-
 } // namespace Mpspp
 
 /*@}*/
 #endif // MPS_LOCAL_H
+
+
+/*
+
+//	void computeIntermediate(MatrixType& matrixNew,
+//	                         const MatrixType& matrixOld,
+//	                         SizeType center,
+//	                         const SymmetryLocalType& symmLocal) const
+//	{
+//		const SparseMatrixType& Bmatrix = B_[center]->operator()();
+//		SparseMatrixType Btranspose;
+//		transposeConjugate(Btranspose,Bmatrix);
+
+//		matrixNew.resize(Bmatrix.row(),Bmatrix.row());
+//		matrixNew.setTo(0.0);
+
+//		if (matrixOld.n_row()==0) {
+//			assert(center+1==B_.size());
+//			for (SizeType x=0;x<Bmatrix.row();x++) {
+//				for (int k=Bmatrix.getRowPtr(x);k<Bmatrix.getRowPtr(x+1);k++) {
+//					SizeType sigma = Bmatrix.getCol(k);
+//					for (int k2=Btranspose.getRowPtr(sigma);
+//					     k2<Btranspose.getRowPtr(sigma+1);
+//					     k2++) {
+//						SizeType y = Btranspose.getCol(k2);
+//						matrixNew(x,y) += Bmatrix.getValue(k)*
+//						        std::conj(Btranspose.getValue(k2));
+//					}
+//				}
+//			}
+
+//			return;
+//		}
+
+//		const SymmetryFactorType& symm = symmLocal(center);
+//		for (SizeType anm2=0;anm2<Bmatrix.row();anm2++) {
+//			for (int k=Bmatrix.getRowPtr(anm2);k<Bmatrix.getRowPtr(anm2+1);k++) {
+//				PairType p = symm.right().unpack(Bmatrix.getCol(k));
+//				SizeType sigmanm2=p.first;
+//				SizeType anm1=p.second;
+//				for (SizeType apnm1=0;apnm1<matrixOld.n_row();apnm1++) {
+//					SizeType x = symm.right().pack(sigmanm2,apnm1);
+//					for (int k2=Btranspose.getRowPtr(x);k2<Btranspose.getRowPtr(x+1);k2++) {
+//						SizeType apnm2 = Btranspose.getCol(k2);
+//						matrixNew(anm2,apnm2) += matrixOld(anm1,apnm1)*
+//						        Bmatrix.getValue(k)*Btranspose.getValue(k2);
+//					} // k2
+//				} // apnm1
+//			} // k
+//		} // anm2
+//	}
+
+//	RealType normA(const SymmetryLocalType& symm) const
+//	{
+//		MatrixType tmpOld;
+
+//		for (SizeType i=0;i<A_.size();i++) {
+//			SizeType center = i;
+//			MatrixType tmpNew;
+//			computeIntermediateA(tmpNew,tmpOld,center,symm);
+//			tmpOld = tmpNew;
+//		}
+
+//		ComplexOrRealType sum = 0;
+//		for (SizeType i=0;i<tmpOld.n_row();i++) {
+//			for (SizeType j=0;j<tmpOld.n_col();j++) {
+//				sum += tmpOld(i,j);
+//			}
+//		}
+//		return std::real(sum);
+//	}
+
+//	void computeIntermediateA(MatrixType& matrixNew,
+//	                          const MatrixType& matrixOld,
+//	                          SizeType center,
+//	                          const SymmetryLocalType& symmLocal) const
+//	{
+//		const SymmetryFactorType& symm = symmLocal(center+1);
+//		SizeType leftSize = symm.left().split();
+//		SizeType leftSize2 = symm.left().size();
+
+//		SparseMatrixType Atranspose;
+//		transposeConjugate(Atranspose,A_[center]->operator()());
+//		matrixNew.resize(leftSize*leftSize,leftSize2*leftSize2);
+//		matrixNew.setTo(0.0);
+//		assert(Atranspose.row()==symm.left().size());
+//		for (SizeType a1=0;a1<Atranspose.row();a1++) {
+//			for (int k1=Atranspose.getRowPtr(a1);k1<Atranspose.getRowPtr(a1+1);k1++) {
+//				PairType a0sigma1=symm.left().unpack(Atranspose.getCol(k1));
+//				SizeType a0 = a0sigma1.first;
+//				SizeType sigma1= a0sigma1.second;
+//				for (SizeType a1p=0;a1p<Atranspose.row();a1p++) {
+//					for (int k2=Atranspose.getRowPtr(a1p);
+//					     k2<Atranspose.getRowPtr(a1p+1);
+//					     k2++) {
+
+//						PairType a0sigma1p=symm.left().unpack(Atranspose.getCol(k2));
+//						SizeType a0p = a0sigma1p.first;
+//						SizeType sigma1p= a0sigma1p.second;
+//						if (sigma1!=sigma1p) continue;
+//						matrixNew(a0+a0p*leftSize,a1+a1p*leftSize2) +=
+//						        Atranspose.getValue(k1)*std::conj(Atranspose.getValue(k2));
+//					} // k2
+//				} // a1p
+//			} // k1
+//		} // a1
+
+//		if (matrixOld.n_row()==0) return;
+//		MatrixType m = matrixOld * matrixNew;
+//		matrixNew = m;
+//	}
+
+*/
 

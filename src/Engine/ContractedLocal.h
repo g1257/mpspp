@@ -89,22 +89,6 @@ public:
 	      L_(abState.sites(),ProgramGlobals::PART_LEFT)
 	{}
 
-	void grow(SizeType currentSite,const SymmetryHelperType& symmHelper,SizeType nsites)
-	{
-
-		L_[currentSite+1].build(abState_.A(currentSite),
-		                        h_(currentSite),
-		                        L_[currentSite],
-		                        symmHelper,
-		                        currentSite+1);
-
-		R_[currentSite+1].build(abState_.B(currentSite),
-		                        h_(nsites-1-currentSite),
-		                        R_[currentSite],
-		                        symmHelper,
-		                        currentSite+1);
-	}
-
 	void initialGuess(SizeType currentSite,
 	                  const SymmetryHelperType& symmHelper,
 	                  SizeType nsites)
@@ -157,10 +141,6 @@ public:
 		return (leftOrRight == PART_LEFT) ? L_[currentSite] : R_[currentSite];
 	}
 
-	template<typename MatrixProductOperatorType2>
-	friend std::ostream& operator<<(std::ostream&,
-	                                const ContractedLocal<MatrixProductOperatorType2>&);
-
 private:
 
 	void moveLeft(SizeType currentSite,
@@ -199,19 +179,6 @@ private:
 	typename PsimagLite::Vector<ContractedFactorType>::Type L_;
 
 }; // ContractedLocal
-
-template<typename MatrixProductOperatorType>
-std::ostream& operator<<(std::ostream& os,
-                         const ContractedLocal<MatrixProductOperatorType>& contractedLocal)
-{
-	os<<"ContractedLocal: right size="<<contractedLocal.R_.size()<<"\n";
-	for (SizeType i=0;i<contractedLocal.R_.size();i++)
-		os<<contractedLocal.R_[i];
-	os<<"ContractedLocal: left size="<<contractedLocal.L_.size()<<"\n";
-	for (SizeType i=0;i<contractedLocal.L_.size();i++)
-		os<<contractedLocal.L_[i];
-	return os;
-}
 
 } // namespace Mpspp
 

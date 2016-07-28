@@ -95,7 +95,6 @@ public:
 	{
 		data_.resize(n,n);
 		data_.makeDiagonal(n,1.0);
-
 //		assert(isNormalized(data_));
 	}
 
@@ -136,18 +135,9 @@ public:
 		trunc.matrixRow(data_,cutoff);
 	}
 
-	PsimagLite::String typeToString() const
-	{
-		return (aOrB_==TYPE_A) ? "A" : "B";
-	}
-
 	const SparseMatrixType& operator()() const { return data_; }
 
 	const SizeType type() const { return aOrB_; }
-
-	template<typename ComplexOrRealType2,typename SymmetryLocalType2>
-	friend std::ostream& operator<<(std::ostream&,
-	                                const MpsFactor<ComplexOrRealType2,SymmetryLocalType2>&);
 
 private:
 
@@ -204,20 +194,11 @@ private:
 		MatrixType mtranspose;
 		if (aOrB_==TYPE_B)
 			transposeConjugate(mtranspose,finalU);
-
-		//		std::cout<<"new AorB=\n";
-		//		std::cout<<finalU;
-		//		truncation.print(std::cout);
-		//		std::cout<<"final vt\n";
-		//		std::cout<<finalVt;
 		assert(isNormalized(finalU));
 		//assert(respectsSymmetry(finalU,summed));
-		//		assert(isCorrectSvd(m,finalU,truncation,finalVt));
+		//assert(isCorrectSvd(m,finalU,truncation,finalVt));
 		fullMatrixToCrsMatrix(data_,(aOrB_==TYPE_A) ? finalU : mtranspose);
-		// debuggin only
 		assert(aOrB_ == TYPE_A);
-		//SizeType n = data_.row();
-		//data_.makeDiagonal(n,1.0);
 	}
 
 	void setThisSector(MatrixType& u,
@@ -269,54 +250,6 @@ private:
 		//		std::cout<<"\n";
 	}
 
-	void setFinalVt(MatrixType& finalVt,
-	                SizeType istart,
-	                SizeType itotal,
-	                SizeType jstart,
-	                SizeType jtotal,
-	                const MatrixType& vt) const
-	{
-		std::cout<<"setFinalU from "<<istart<<" to "<<(istart+itotal-1)<<"\n";
-		for (SizeType i=0;i<jtotal;i++) {
-			for (SizeType j=0;j<jtotal;j++) {
-				finalVt(i+jstart,j+istart) = vt(i,j);
-			}
-		}
-	}
-
-	template<typename SomeTruncationType>
-	bool isCorrectSvd(const MatrixType& mat,
-	                  const MatrixType& u,
-	                  SomeTruncationType& truncation,
-	                  const MatrixType& vt) const
-	{
-		MatrixType m(u.n_row(),vt.n_col());
-		truncation.recoverSvd(m,u,vt);
-		std::cout<<"recovering matrix from svd:\n";
-		std::cout<<m;
-		for (SizeType i=0;i<m.n_row();i++) {
-			for (SizeType j=0;j<m.n_col();j++)
-				if (fabs(m(i,j)-mat(i,j))>1e-6) return false;
-		}
-		return true;
-	}
-
-	bool respectsSymmetry(const MatrixType& m,
-	                      const SymmetryComponentType& summed) const
-	{
-		assert(m.n_row()==summed.size());
-		for (SizeType i=0;i<m.n_row();i++) {
-			SizeType qa = summed.qn(i);
-			for (SizeType j=0;j<m.n_col();j++) {
-				SizeType qk = summed.qn(j);
-				if (qa==qk) continue;
-				if (fabs(m(i,j))>1e-6)
-					return false;
-			}
-		}
-
-		return true;
-	}
 
 	bool isNormalized(const MatrixType& m) const
 	{
@@ -375,46 +308,71 @@ private:
 		m = tmp;
 	}
 
-	void resizeUAndNormalize(MatrixType& finalU,
-	                         SizeType smallSize,
-	                         bool flag=false) const
-	{
-		SizeType m = finalU.n_row();
-		SizeType n = finalU.n_col();
-
-		assert(m==n);
-		if (n == smallSize) return;
-		MatrixType tmp(m,smallSize);
-
-		for (SizeType i = 0; i < m; i++) {
-			for (SizeType j = 0; j < smallSize; j++) {
-				RealType sum=0.0;
-				for (SizeType k = 0; k < smallSize; k++)
-					sum+=finalU(i,k)*std::conj(finalU(j,k));
-				if (!flag) sum=1.0;
-				assert(sum>=1e-6);
-				tmp(i,j) = finalU(i,j)/sqrt(sum);
-			}
-		}
-		finalU = tmp;
-	}
-
 	RandomNumberGeneratorType rng_;
 	SparseMatrixType data_;
 	SizeType aOrB_;
 }; // MpsFactor
 
-template<typename ComplexOrRealType,typename SymmetryLocalType>
-std::ostream& operator<<(std::ostream& os,
-                         const MpsFactor<ComplexOrRealType,SymmetryLocalType>& mps)
-{
-	os<<"type= "<<mps.typeToString();
-	os<<" rows= "<<mps.data_.row()<<" cols="<<mps.data_.col()<<"\n";
-	return os;
-}
-
 } // namespace Mpspp
 
 /*@}*/
 #endif // MPS_FACTOR_TYPE_H
+
+
+
+/* Might need these functions later
+
+	// MIGHT NEED this
+	template<typename SomeTruncationType>
+	bool isCorrectSvd(const MatrixType& mat,
+	                  const MatrixType& u,
+	                  SomeTruncationType& truncation,
+	                  const MatrixType& vt) const
+	{
+		MatrixType m(u.n_row(),vt.n_col());
+		truncation.recoverSvd(m,u,vt);
+		std::cout<<"recovering matrix from svd:\n";
+		std::cout<<m;
+		for (SizeType i=0;i<m.n_row();i++) {
+			for (SizeType j=0;j<m.n_col();j++)
+				if (fabs(m(i,j)-mat(i,j))>1e-6) return false;
+		}
+		return true;
+	}
+
+	// MIGHT NEED for asserts
+	bool respectsSymmetry(const MatrixType& m,
+	                      const SymmetryComponentType& summed) const
+	{
+		assert(m.n_row()==summed.size());
+		for (SizeType i=0;i<m.n_row();i++) {
+			SizeType qa = summed.qn(i);
+			for (SizeType j=0;j<m.n_col();j++) {
+				SizeType qk = summed.qn(j);
+				if (qa==qk) continue;
+				if (fabs(m(i,j))>1e-6)
+					return false;
+			}
+		}
+
+		return true;
+	}
+
+	// MIGHT NEED
+void setFinalVt(MatrixType& finalVt,
+                SizeType istart,
+                SizeType itotal,
+                SizeType jstart,
+                SizeType jtotal,
+                const MatrixType& vt) const
+{
+	std::cout<<"setFinalU from "<<istart<<" to "<<(istart+itotal-1)<<"\n";
+	for (SizeType i=0;i<jtotal;i++) {
+		for (SizeType j=0;j<jtotal;j++) {
+			finalVt(i+jstart,j+istart) = vt(i,j);
+		}
+	}
+}
+
+*/
 

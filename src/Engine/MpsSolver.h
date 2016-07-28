@@ -124,25 +124,6 @@ private:
 
 	}
 
-	void growLattice(MpsLocalType& psi,
-	                 ContractedLocalType& contracted,
-	                 SizeType& center,
-	                 SymmetryLocalType& symm)
-	{
-		SizeType nsites = model_.geometry().numberOfSites();
-
-		StepType step(solverParams_,psi,contracted,model_,io_);
-
-		if (nsites&1) {
-			throw std::runtime_error("growLattice: nsites must be even\n");
-		}
-		SizeType total = SizeType(nsites/2);
-		for (SizeType i=0;i<total;i++) {
-			center=i;
-			step.grow(symm,center);
-		}
-	}
-
 	void finiteLoops(StepType& step,SizeType& center,SymmetryLocalType& symm)
 	{
 		SizeType nsites = model_.geometry().numberOfSites();
@@ -188,19 +169,19 @@ private:
 		progress_.printline(msg,std::cout);
 	}
 
-	void printMemoryUsage() const
-	{
-		PsimagLite::MemoryUsage musage;
-		PsimagLite::String vmPeak = musage.findEntry("VmPeak:");
-		PsimagLite::String vmSize = musage.findEntry("VmSize:");
-		PsimagLite::OstringStream msg;
-		msg<<"Current virtual memory is "<<vmSize<<" maximum was "<<vmPeak;
-		progress_.printline(msg,std::cout);
-		PsimagLite::OstringStream msg2;
-		msg2<<"Amount of time scheduled (user plus system): ";
-		msg2<<musage.time()<<" clock ticks";
-		progress_.printline(msg2,std::cout);
-	}
+//	void printMemoryUsage() const
+//	{
+//		PsimagLite::MemoryUsage musage;
+//		PsimagLite::String vmPeak = musage.findEntry("VmPeak:");
+//		PsimagLite::String vmSize = musage.findEntry("VmSize:");
+//		PsimagLite::OstringStream msg;
+//		msg<<"Current virtual memory is "<<vmSize<<" maximum was "<<vmPeak;
+//		progress_.printline(msg,std::cout);
+//		PsimagLite::OstringStream msg2;
+//		msg2<<"Amount of time scheduled (user plus system): ";
+//		msg2<<musage.time()<<" clock ticks";
+//		progress_.printline(msg2,std::cout);
+//	}
 
 	const ParametersSolverType& solverParams_;
 	const ModelBaseType& model_;

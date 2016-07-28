@@ -39,60 +39,60 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 *********************************************************
 
 */
-/** \ingroup MPSPP */
-/*@{*/
+///** \ingroup MPSPP */
+///*@{*/
 
-/*! \file InternalProductKron.h
- *
- *  A class to encapsulate the product x+=Hy, where x and y are vectors
- *  and H is the Hamiltonian matrix
- *
- */
-#ifndef	INTERNALPRODUCT_KRON_H
-#define INTERNALPRODUCT_KRON_H
+///*! \file InternalProductKron.h
+// *
+// *  A class to encapsulate the product x+=Hy, where x and y are vectors
+// *  and H is the Hamiltonian matrix
+// *
+// */
+//#ifndef	INTERNALPRODUCT_KRON_H
+//#define INTERNALPRODUCT_KRON_H
 
-#include <vector>
-#include "InitKron.h"
-#include "KronMatrix.h"
+//#include <vector>
+//#include "InitKron.h"
+//#include "KronMatrix.h"
 
-namespace Mpspp {
-template<typename T,typename ModelType>
-class InternalProductKron {
-public:
-	typedef T HamiltonianElementType;
-	typedef T value_type;
-	typedef typename ModelType::ModelHelperType ModelHelperType;
-	typedef typename ModelHelperType::RealType RealType;
-	typedef typename ModelType::ReflectionSymmetryType ReflectionSymmetryType;
-	typedef InitKron<ModelType,ModelHelperType> InitKronType;
-	typedef KronMatrix<InitKronType> KronMatrixType;
+//namespace Mpspp {
+//template<typename T,typename ModelType>
+//class InternalProductKron {
+//public:
+//	typedef T HamiltonianElementType;
+//	typedef T value_type;
+//	typedef typename ModelType::ModelHelperType ModelHelperType;
+//	typedef typename ModelHelperType::RealType RealType;
+//	typedef typename ModelType::ReflectionSymmetryType ReflectionSymmetryType;
+//	typedef InitKron<ModelType,ModelHelperType> InitKronType;
+//	typedef KronMatrix<InitKronType> KronMatrixType;
 
-	InternalProductKron(ModelType const *model,
-	                    ModelHelperType const *modelHelper,
-	                    ReflectionSymmetryType* rs=0)
-	    : initKron_(*model,*modelHelper),kronMatrix_(initKron_)
-	{
-	}
+//	InternalProductKron(ModelType const *model,
+//	                    ModelHelperType const *modelHelper,
+//	                    ReflectionSymmetryType* rs=0)
+//	    : initKron_(*model,*modelHelper),kronMatrix_(initKron_)
+//	{
+//	}
 
-	SizeType rank() const { return initKron_.size(); }
+//	SizeType rank() const { return initKron_.size(); }
 
-	template<typename SomeVectorType>
-	void matrixVectorProduct(SomeVectorType &x,SomeVectorType const &y) const
-	{
-		kronMatrix_.matrixVectorProduct(x,y);
-	}
+//	template<typename SomeVectorType>
+//	void matrixVectorProduct(SomeVectorType &x,SomeVectorType const &y) const
+//	{
+//		kronMatrix_.matrixVectorProduct(x,y);
+//	}
 
-	SizeType reflectionSector() const { return 0; }
+//	SizeType reflectionSector() const { return 0; }
 
-	void reflectionSector(SizeType p) {  }
+//	void reflectionSector(SizeType p) {  }
 
-private:
+//private:
 
-	InitKronType initKron_;
-	KronMatrixType kronMatrix_;
-}; // class InternalProductKron
-} // namespace Mpspp
+//	InitKronType initKron_;
+//	KronMatrixType kronMatrix_;
+//}; // class InternalProductKron
+//} // namespace Mpspp
 
-/*@}*/
-#endif
+///*@}*/
+//#endif
 
