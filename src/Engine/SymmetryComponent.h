@@ -63,50 +63,21 @@ public:
 	enum {COMPONENT_LEFT,COMPONENT_RIGHT,COMPONENT_SUPER};
 
 	SymmetryComponent(SizeType type)
-	    : type_(type),leftSize_(0)
+		: type_(type),leftSize_(0)
 	{}
 
 	SymmetryComponent(SizeType type,
-	                  SizeType hilbert,
-	                  SizeType site,
-	                  const VectorIntegerType& quantumNumbers)
-	    : type_(type),
-	      leftSize_(hilbert),
-	      block_(1,site),
-	      quantumNumbers_(quantumNumbers)
+					  SizeType hilbert,
+					  SizeType site,
+					  const VectorIntegerType& quantumNumbers)
+		: type_(type),
+		  leftSize_(hilbert),
+		  block_(1,site),
+		  quantumNumbers_(quantumNumbers)
 	{
 		if (quantumNumbers.size()==1) block_.resize(0);
 
 		findPermutationAndPartition();
-	}
-
-	void setSite(SizeType site)
-	{
-		assert(block_.size()==1);
-		block_[0] = site;
-	}
-
-	void setComponent(SizeType comp)
-	{
-		type_=comp;
-	}
-
-	void grow(SizeType site,
-	          const VectorIntegerType& quantumNumbers,
-	          SizeType nsites,
-	          SizeType leftSize)
-	{
-		assert(type_==COMPONENT_RIGHT);
-		SymmetryComponent sc1(type_,0,site,quantumNumbers);
-		SymmetryComponent sc(type_);
-		*this = sc1;
-		SizeType site1 = site+1;
-		for (SizeType i=site1;i<nsites;i++) {
-			SymmetryComponent sc2(type_,0,i,quantumNumbers);
-			sc.combine(*this,sc2);
-			*this = sc;
-		}
-		this->leftSize_ = leftSize;
 	}
 
 	void combine(const SymmetryComponent& left,const SymmetryComponent& right)
@@ -223,7 +194,7 @@ public:
 	}
 
 	friend std::ostream& operator<<(std::ostream& os,
-	                                const SymmetryComponent& symm);
+									const SymmetryComponent& symm);
 
 private:
 
@@ -231,24 +202,13 @@ private:
 	template<typename IoInputter>
 	void loadInternal(IoInputter& io)
 	{
-		//int x=0;
-		//useSu2Symmetry_=false;
-		//io.readline(x,"#useSu2Symmetry=");
-		//if (x>0) useSu2Symmetry_=true;
 		io.read(block_,"#BLOCK");
 		io.read(quantumNumbers_,"#QN");
-		//io.read(electrons_,"#ELECTRONS");
-		//io.read(electronsOld_,"#0OLDELECTRONS");
 		io.read(partition_,"#PARTITION");
 		io.read(permutationInverse_,"#PERMUTATIONINVERSE");
 		permutation_.resize(permutationInverse_.size());
 		for (SizeType i=0;i<permutation_.size();i++)
 			permutation_[permutationInverse_[i]]=i;
-		/*dmrgTransformed_=false;
-		if (useSu2Symmetry_)
-			symmSu2_.load(io);
-		else
-			symmLocal_.load(io);*/
 	}
 
 	void findPermutationAndPartition()

@@ -62,7 +62,7 @@ public:
 
 	template<typename SomeFermionSignType>
 	SymmetryHelper(const SomeFermionSignType& fermionSign,const SymmetryLocalType& symm)
-	    : symm_(symm),currentSite_(fermionSign.site())
+		: symm_(symm),currentSite_(fermionSign.site())
 	{
 		VectorIntegerType qn = fermionSign.quantumNumbers();
 		electronsOneSite_.resize(qn.size());

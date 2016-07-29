@@ -52,9 +52,9 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 namespace Mpspp {
 
 template<typename ParametersSolverType_,
-         typename InputValidatorType_,
-         typename SymmetryLocalType_,
-         typename GeometryType_>
+		 typename InputValidatorType_,
+		 typename SymmetryLocalType_,
+		 typename GeometryType_>
 class ModelBase {
 
 	static const int MAX_SITES = ProgramGlobals::MAX_SITES;
@@ -88,14 +88,14 @@ public:
 	virtual const GeometryType& geometry() const=0;
 
 	virtual void fullHamiltonian(SparseMatrixType& matrix,
-	                             const ModelHelperType& modelHelper) const
+								 const ModelHelperType& modelHelper) const
 	{
 		modelHelper.fullHamiltonian(matrix);
 	}
 
 	virtual void matrixVectorProduct(VectorType& x,
-	                                 const VectorType& y,
-	                                 const ModelHelperType& modelHelper) const
+									 const VectorType& y,
+									 const ModelHelperType& modelHelper) const
 	{
 		modelHelper.matrixVectorProduct(x,y);
 	}

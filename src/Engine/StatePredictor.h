@@ -83,18 +83,7 @@ public:
 		symmetrySector_ = symmetrySector;
 	}
 
-	const RealType& energy() const { return energy_; }
-
-	const VectorType& vector() const { return vectorSaved_; }
-
-	SizeType symmSector() const { return symmetrySector_; }
-
 private:
-
-	void myRandomT(std::complex<RealType>& value)
-	{
-		value = std::complex<RealType>(rng_() - 0.5, rng_() - 0.5);
-	}
 
 	void myRandomT(RealType& value)
 	{

@@ -64,10 +64,10 @@ template<typename MatrixProductOperatorType_>
 class ContractedLocal {
 
 	enum {TO_THE_RIGHT = ProgramGlobals::TO_THE_RIGHT,
-	      TO_THE_LEFT = ProgramGlobals::TO_THE_LEFT};
+		  TO_THE_LEFT = ProgramGlobals::TO_THE_LEFT};
 
 	enum {PART_LEFT = ProgramGlobals::PART_LEFT,
-	      PART_RIGHT = ProgramGlobals::PART_RIGHT};
+		  PART_RIGHT = ProgramGlobals::PART_RIGHT};
 
 public:
 
@@ -83,28 +83,28 @@ public:
 	typedef typename MatrixProductOperatorType::SymmetryHelperType SymmetryHelperType;
 
 	ContractedLocal(const MpsLocalType& abState,const MatrixProductOperatorType& h)
-	    : abState_(abState),
-	      h_(h),
-	      R_(abState.sites(),ProgramGlobals::PART_RIGHT),
-	      L_(abState.sites(),ProgramGlobals::PART_LEFT)
+		: abState_(abState),
+		  h_(h),
+		  R_(abState.sites(),ProgramGlobals::PART_RIGHT),
+		  L_(abState.sites(),ProgramGlobals::PART_LEFT)
 	{}
 
 	void initialGuess(SizeType currentSite,
-	                  const SymmetryHelperType& symmHelper,
-	                  SizeType nsites)
+					  const SymmetryHelperType& symmHelper,
+					  SizeType nsites)
 	{
 		ContractedFactorType* ptr = (currentSite == 0) ? 0 : &R_[currentSite];
 		R_[currentSite+1].build(abState_.B(nsites-1-currentSite),
-		                      h_(nsites-1-currentSite),
-		                      ptr,
-		                      symmHelper,
-		                      currentSite);
+								h_(nsites-1-currentSite),
+								ptr,
+								symmHelper,
+								currentSite);
 	}
 
 	//! From As (or Bs) and Ws reconstruct *this
 	void move(SizeType currentSite,
-	          SizeType direction,
-	          const SymmetryHelperType& symmHelper)
+			  SizeType direction,
+			  const SymmetryHelperType& symmHelper)
 	{
 		if (direction==TO_THE_RIGHT) {
 			moveLeft(currentSite,abState_,symmHelper);
@@ -115,10 +115,10 @@ public:
 
 	template<typename SomeTruncationType>
 	void truncate(SizeType site,
-	              SizeType part,
-	              SizeType cutoff,
-	              SizeType nsites,
-	              const SomeTruncationType& trunc)
+				  SizeType part,
+				  SizeType cutoff,
+				  SizeType nsites,
+				  const SomeTruncationType& trunc)
 	{
 		if (part==ProgramGlobals::PART_LEFT) {
 			if (site+1>=L_.size()) return;
@@ -130,7 +130,7 @@ public:
 	}
 
 	const ContractedFactorType& operator()(SizeType currentSite,
-	                                       SizeType leftOrRight) const
+										   SizeType leftOrRight) const
 	{
 		if (leftOrRight == PART_LEFT) {
 			assert(currentSite<L_.size());
@@ -144,32 +144,32 @@ public:
 private:
 
 	void moveLeft(SizeType currentSite,
-	              const MpsLocalType& abState,
-	              const SymmetryHelperType& symm)
+				  const MpsLocalType& abState,
+				  const SymmetryHelperType& symm)
 	{
 		assert(currentSite+1<L_.size());
 
 		L_[currentSite+1].move(abState.A(currentSite),
-		                       h_(currentSite),
-		                       L_[currentSite],
-		                       symm,
-		                       currentSite);
+							   h_(currentSite),
+							   L_[currentSite],
+							   symm,
+							   currentSite);
 		std::cout<<"set L_["<<(currentSite+1)<<"]="<<L_[currentSite+1].row()<<"\n";
 	}
 
 	void moveRight(SizeType currentSite,
-	               const MpsLocalType& abState,
-	               const SymmetryHelperType& symm)
+				   const MpsLocalType& abState,
+				   const SymmetryHelperType& symm)
 	{
 		SizeType nsites = symm.symmLocal()(currentSite).super().block().size();
 		SizeType siteToSet = nsites - currentSite;
 		if (siteToSet==R_.size()) return;
 		assert(siteToSet<R_.size());
 		R_[siteToSet].move(abState.B(siteToSet-1),
-		                   h_(currentSite),
-		                   R_[siteToSet-1],
-		        symm,
-		        currentSite);
+						   h_(currentSite),
+						   R_[siteToSet-1],
+				symm,
+				currentSite);
 		std::cout<<"set R_["<<siteToSet<<"]="<<R_[siteToSet].row()<<"\n";
 	}
 

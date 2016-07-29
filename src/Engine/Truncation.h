@@ -79,11 +79,6 @@ public:
 			s_[i] = 0.0;
 	}
 
-	void set(VectorRealType& s)
-	{
-		s_=s;
-	}
-
 	SizeType size() const { return s_.size(); }
 
 	RealType& operator()(SizeType i)
@@ -101,10 +96,8 @@ public:
 
 		if (part==ProgramGlobals::PART_LEFT) {
 			if (leftSize<=cutoff) return;
-			//			cutoff = std::min(cutoff,rightSize);
 		} else {
 			if (rightSize<=cutoff) return;
-			//			cutoff = std::min(cutoff,leftSize);
 		}
 
 		order();
@@ -185,8 +178,6 @@ private:
 
 	void permute(SparseMatrixType& m,const SparseMatrixType& src,SizeType what) const
 	{
-		//		VectorIntegerType permInverse(perm_.size());
-		//		getPermInverse(permInverse);
 		const VectorIntegerType& perm = perm_;
 		SizeType row = src.row();
 		MatrixType dest(row,src.col());
@@ -201,20 +192,11 @@ private:
 		fullMatrixToCrsMatrix(m,dest);
 	}
 
-	void getPermInverse(VectorIntegerType& permInverse) const
-	{
-		for (SizeType i=0;i<perm_.size();i++)
-			permInverse[perm_[i]]=i;
-	}
-
 	MpsLocalType& mps_;
 	ContractedLocalType& contracted_;
 	bool enabled_;
 	VectorRealType s_;
 	VectorIntegerType perm_;
-
-	//	VectorRealType s_;
-	//	VectorIntegerType perm_;
 
 }; // Truncation
 

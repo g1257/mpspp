@@ -51,8 +51,8 @@ namespace Mpspp {
 template<typename ContractedPartType>
 class ModelHelper {
 
-    enum {PART_RIGHT = ProgramGlobals::PART_RIGHT,
-          PART_LEFT = ProgramGlobals::PART_LEFT};
+	enum {PART_RIGHT = ProgramGlobals::PART_RIGHT,
+		  PART_LEFT = ProgramGlobals::PART_LEFT};
 
 public:
 
@@ -72,33 +72,25 @@ public:
 	typedef typename MatrixProductOperatorType::SymmetryHelperType SymmetryHelperType;
 
 	ModelHelper(const ContractedPartType& contractedPart,
-	            SizeType symmetrySector,
-	            SizeType currentSite,
-	            SizeType direction,
-	            const MpoFactorType& hamiltonian,
-	            const SymmetryHelperType& symmetry,
-	            SizeType siteForSymm)
-	    : contractedPart_(contractedPart),
-	      symmetrySector_(symmetrySector),
-	      currentSite_(currentSite),
-	      part_(direction),
-	      hamiltonian_(hamiltonian),
-	      symmetry_(symmetry),
-	      siteForSymm_(siteForSymm)
+				SizeType symmetrySector,
+				SizeType currentSite,
+				SizeType direction,
+				const MpoFactorType& hamiltonian,
+				const SymmetryHelperType& symmetry,
+				SizeType siteForSymm)
+		: contractedPart_(contractedPart),
+		  symmetrySector_(symmetrySector),
+		  currentSite_(currentSite),
+		  part_(direction),
+		  hamiltonian_(hamiltonian),
+		  symmetry_(symmetry),
+		  siteForSymm_(siteForSymm)
 	{}
 
 	SizeType size() const
 	{
 		return symmetry_.symmLocal()(siteForSymm_).super().partitionSize(symmetrySector_);
 	}
-
-//	SizeType symmetrySector() const { return symmetrySector_; }
-
-//	SizeType hilbertSize() const { return hamiltonian_(0,0).row(); }
-
-//	const MpoFactorType& hamiltonian() const { return hamiltonian_; }
-
-//	const SymmetryFactorType& symmetry() const { return symmetry_; }
 
 	//! Eq. (201) but very modified
 	void matrixVectorProduct(VectorType& x,const VectorType& y) const
@@ -112,9 +104,9 @@ public:
 		SizeType rightIndex = (part_ == PART_RIGHT) ? currentSite_ : nsites - currentSite_ -1;
 
 		const ContractedFactorType& cL = contractedPart_(leftIndex,
-		                                                 ProgramGlobals::PART_LEFT);
+														 ProgramGlobals::PART_LEFT);
 		const ContractedFactorType& cR = contractedPart_(rightIndex,
-		                                                 ProgramGlobals::PART_RIGHT);
+														 ProgramGlobals::PART_RIGHT);
 		for (SizeType blm1=0;blm1<cL.size();blm1++) {
 			const SparseMatrixType& l1 = cL(blm1);
 			for (SizeType bl=0;bl<cR.size();bl++) {
@@ -130,7 +122,7 @@ public:
 					SizeType sigmaL=0;
 					SizeType alB=0;
 					SizeType electronsLeft = symmetry_.electronsFromQn(symm.left().
-					                                                   qn(ab.first));
+																	   qn(ab.first));
 					if (part_==PART_RIGHT) {
 						PairType tmpPair1 = symm.left().unpack(ab.first);
 						alm1=tmpPair1.first;
@@ -164,7 +156,7 @@ public:
 								}
 								if (j<offset || j>=offset+total) continue;
 								x[i] += y[j-offset]*l1.getValue(k1)*
-								        w.getValue(kw)*r1.getValue(k2)*fermionSign;
+										w.getValue(kw)*r1.getValue(k2)*fermionSign;
 							} // k2 right
 						} // kw Hamiltonian
 					} // k1 left
@@ -187,31 +179,20 @@ public:
 
 		matrix.resize(total,total);
 		const ContractedFactorType& cL = contractedPart_(leftIndex,
-		                                                 ProgramGlobals::PART_LEFT);
+														 ProgramGlobals::PART_LEFT);
 		const ContractedFactorType& cR = contractedPart_(rightIndex,
-		                                                 ProgramGlobals::PART_RIGHT);
+														 ProgramGlobals::PART_RIGHT);
 		VectorType v(total,0);
 		SizeType counter = 0;
 		assert(hamiltonian_.n_row()>=cL.size());
 		assert(hamiltonian_.n_col()>=cR.size());
-
-		if (part_==PART_RIGHT) {
-			//assert(symm.left().split()==cL(0).row());
-			//assert(symm.right().size()==cR(0).row());
-		} else {
-			//			assert(symm.right().split()==0 ||
-			//			       symm.right().size()/symm.right().split()==cR(0).row());
-			//			assert(symm.left().size()==cL(0).row());
-		}
 
 		for (SizeType i=0;i<total;i++) {
 			matrix.setRow(i,counter);
 			for (SizeType blm1=0;blm1<cL.size();blm1++) {
 				for (SizeType bl=0;bl<cR.size();bl++) {
 					const OperatorType& wOp = hamiltonian_(blm1,bl);
-					//					const SparseMatrixType& w = wOp.matrix();
 					SparseMatrixType w = wOp.matrix();
-					//                    transposeConjugate(w,wOp.matrix());
 					const SparseMatrixType& r1 = cR(bl);
 					const SparseMatrixType& l1 = cL(blm1);
 					PairType ab = symm.super().unpack(i+offset);
@@ -220,7 +201,7 @@ public:
 					SizeType alB=0;
 
 					SizeType electronsLeft = symmetry_.electronsFromQn(symm.left().
-					                                                   qn(ab.first));
+																	   qn(ab.first));
 					if (part_==PART_RIGHT) {
 						PairType tmpPair1 = symm.left().unpack(ab.first);
 						alm1=tmpPair1.first;
@@ -255,7 +236,7 @@ public:
 
 								if (j<offset || j>=offset+total) continue;
 								v[j-offset] += l1.getValue(k1)*w.getValue(kw)*
-								        r1.getValue(k2)*fermionSign;
+										r1.getValue(k2)*fermionSign;
 							} // k2 right
 						} // kw Hamiltonian
 					} // k1 left

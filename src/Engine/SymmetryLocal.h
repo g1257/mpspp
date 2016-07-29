@@ -80,9 +80,9 @@ public:
 		assert(site+1<data_.size());
 		SymmetryFactorType symmFactor = data_[site];
 		SymmetryComponentType onesite(SymmetryComponentType::COMPONENT_LEFT,
-		                              0,
-		                              site,
-		                              quantumNumbers);
+									  0,
+									  site,
+									  quantumNumbers);
 		assert(site+1<data_.size());
 		symmFactor.moveLeft(data_[site].left(),onesite, data_[site+1].right());
 		data_[site] = symmFactor;
@@ -90,16 +90,16 @@ public:
 	}
 
 	void initialGuess(SizeType site,
-	                  const VectorIntegerType& quantumNumbers,
-	                  SizeType nsites)
+					  const VectorIntegerType& quantumNumbers,
+					  SizeType nsites)
 	{
-        SizeType middle = nsites/2;
+		SizeType middle = nsites/2;
 		SymmetryFactorType symmFactor;
 		SymmetryFactorType* ptr = (data_.size() == 0) ? 0 : &data_[data_.size()-1];
-        if (site < middle) {
-            symmFactor.grow(site,quantumNumbers,ptr,nsites);
-        } else {
-            SizeType ref = nsites - site -1;
+		if (site < middle) {
+			symmFactor.grow(site,quantumNumbers,ptr,nsites);
+		} else {
+			SizeType ref = nsites - site -1;
 			if (ref+1 < data_.size()) {
 				SymmetryComponentType tmp(SymmetryComponentType::COMPONENT_RIGHT);
 				if (ref>0) tmp = data_[ref-1].right();
@@ -107,41 +107,25 @@ public:
 			} else {
 				assert(data_.size() > 0);
 				SymmetryComponentType onesite(SymmetryComponentType::COMPONENT_RIGHT,
-				                              0,
-				                              site,
-				                              quantumNumbers);
+											  0,
+											  site,
+											  quantumNumbers);
 				SizeType max = data_.size() - 1;
 				SymmetryComponentType l(SymmetryComponentType::COMPONENT_LEFT);
 				l.combine(data_[max].left(),onesite);
 				symmFactor.set(l,data_[ref-1].right());
 			}
-        }
-
-		data_.push_back(symmFactor);
-		std::cout<<symmFactor;
-	}
-
-	// left = prev.left + one site
-	// right = prev.right + one site
-	void grow(SizeType site,const VectorIntegerType& quantumNumbers,SizeType nsites)
-	{
-
-		if (data_.size()==0) {
-			SymmetryFactorType symmFactor0;
-			symmFactor0.growFirst(site,quantumNumbers,nsites);
-			data_.push_back(symmFactor0);
 		}
-		SymmetryFactorType symmFactor;
-		symmFactor.grow(site,quantumNumbers,&data_[data_.size()-1],nsites);
+
 		data_.push_back(symmFactor);
 		std::cout<<symmFactor;
 	}
 
 	template<typename SomeTruncationType>
 	void truncate(SizeType site,
-	              SizeType part,
-	              SizeType cutoff,
-	              const SomeTruncationType& trunc)
+				  SizeType part,
+				  SizeType cutoff,
+				  const SomeTruncationType& trunc)
 	{
 		assert(site<data_.size());
 		data_[site].truncate(part,cutoff,trunc);
@@ -154,15 +138,6 @@ private:
 	PsimagLite::Vector<SymmetryFactorType>::Type data_;
 
 }; // SymmetryLocal
-
-std::ostream& operator<<(std::ostream& os,const SymmetryLocal& symm)
-{
-	os<<"symm.data.size= "<<symm.data_.size()<<"\n";
-	for (SizeType i=0;i<symm.data_.size();i++)
-		os<<symm.data_[i];
-	return os;
-}
-
 } // namespace Mpspp
 
 /*@}*/

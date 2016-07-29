@@ -124,13 +124,13 @@ struct FiniteLoop {
 	SizeType keptStates; // kept states
 	int saveOption; // to save or not to save
 	FiniteLoop(int sl,int ks,int so)
-	    : stepLength(sl),keptStates(ks),saveOption(so)
+		: stepLength(sl),keptStates(ks),saveOption(so)
 	{}
 };
 
 //!PTEX_LABEL{139}
 inline void checkFiniteLoops(const PsimagLite::Vector<FiniteLoop>::Type& finiteLoop,
-                             SizeType totalSites)
+							 SizeType totalSites)
 {
 	PsimagLite::String s = "checkFiniteLoops: I'm falling out of the lattice ";
 	PsimagLite::String loops = "";
@@ -150,7 +150,7 @@ inline void checkFiniteLoops(const PsimagLite::Vector<FiniteLoop>::Type& finiteL
 			sopt = 1;
 			if (SizeType(x) != 1 && SizeType(x)!=totalSites-2) {
 				s = __FILE__ + PsimagLite::String(": FATAL: for finite loop number ")
-				        + ttos(i) + "\n";
+						+ ttos(i) + "\n";
 				s += "Saving finite loops must start at the left or";
 				s += " right end of the lattice\n";
 				throw std::runtime_error(s.c_str());
@@ -180,7 +180,7 @@ inline void checkFiniteLoops(const PsimagLite::Vector<FiniteLoop>::Type& finiteL
 			// complain and die if we fell out:
 			s = s + "Loops so far: " + loops + "\n";
 			s =s + "x=" + ttos(x) + " last delta=" +
-			        ttos(delta);
+					ttos(delta);
 			s =s + " sites=" + ttos(totalSites);
 			throw std::runtime_error(s.c_str());
 		}
@@ -394,17 +394,6 @@ struct ParametersMpsSolver {
 			throw std::runtime_error(s.c_str());
 		}
 
-		//		io.readline(initialMps,"InitialMps=");
-		//		tolerance = -1.0;
-		//		try {
-		//			io.readline(tolerance,"TruncationTolerance=");
-		//		} catch (std::exception& e) {}
-
-		//		if (options.find("checkpoint")!=PsimagLite::String::npos)
-		//			io.readline(checkpoint.filename,"CheckpointFilename=");
-		//		else if (options.find("restart")!=PsimagLite::String::npos)
-		//			io.readline(checkpoint.filename,"RestartFilename=");
-
 		nthreads=1; // provide a default value
 		try {
 			io.readline(nthreads,"Threads=");
@@ -418,44 +407,6 @@ struct ParametersMpsSolver {
 	}
 
 };
-
-////! print dmrg p
-//template<typename RealType,typename ComplexOrRealType,typename InputValidatorType>
-//std::ostream &operator<<(std::ostream &os,
-//                         ParametersMpsSolver<RealType,
-//                         ComplexOrRealType,
-//                         InputValidatorType> const &p)
-//{
-//	os<<"#This is MPS++\n";
-//	Provenance provenance;
-//	os<<provenance;
-//	os<<"p.version="<<p.version<<"\n";
-//	os<<"p.model="<<p.model<<"\n";
-//	os<<"p.filename="<<p.filename<<"\n";
-//	os<<"p.options="<<p.options<<"\n";
-//	os<<"p.keptStatesInfinite="<<p.keptStatesInfinite<<"\n";
-//	os<<"finiteLoop\n";
-//	os<<p.finiteLoop;
-
-//	if (p.targetQuantumNumbers.size()>0) {
-//		os<<"p.targetQuantumNumbers=";
-//		for (SizeType i=0;i<p.targetQuantumNumbers.size();i++)
-//			os<<p.targetQuantumNumbers[i]<<" ";
-//		os<<"\n";
-//	} else {
-//		os<<"p.electronsUp="<<p.electronsUp<<"\n";
-//		os<<"p.electronsDown="<<p.electronsDown<<"\n";
-//	}
-//	if (p.tolerance>0)
-//		os<<"p.tolerance="<<p.tolerance<<"\n";
-//	os<<"p.nthreads="<<p.nthreads<<"\n";
-//	os<<"p.useReflectionSymmetry="<<p.useReflectionSymmetry<<"\n";
-//	if (p.checkpoint.filename!="")
-//		os<<"p.restartFilename="<<p.checkpoint.filename<<"\n";
-//	if (p.fileForDensityMatrixEigs!="")
-//		os<<"p.fileForDensityMatrixEigs="<<p.fileForDensityMatrixEigs<<"\n";
-//	return os;
-//}
 } // namespace Dmrg
 /*@}*/
 

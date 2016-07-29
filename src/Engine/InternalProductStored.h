@@ -73,9 +73,9 @@ public:
 	//typedef typename SparseMatrixType::value_type SparseElementType;
 
 	InternalProductStored(ModelType const *model,
-	                      ModelHelperType const *modelHelper,
-	                      const ReflectionSymmetryType* rs=0)
-	    : matrixStored_(2),pointer_(0),progress_("InternalProductStored")
+						  ModelHelperType const *modelHelper,
+						  const ReflectionSymmetryType* rs=0)
+		: matrixStored_(2),pointer_(0),progress_("InternalProductStored")
 	{
 		model_ = model;
 		modelHelper_=modelHelper;
@@ -84,7 +84,7 @@ public:
 			matrixStored_[0].clear();
 			model->fullHamiltonian(matrixStored_[0],*modelHelper);
 			if (model_->solverParams().options.find("debugmatrix") !=
-			        PsimagLite::String::npos) {
+					PsimagLite::String::npos) {
 				MatrixType fullm;
 				crsMatrixToFullMatrix(fullm,matrixStored_[0]);
 				if (PsimagLite::isZero(fullm)) std::cerr<<"Matrix is zero\n";
@@ -119,11 +119,6 @@ public:
 	{
 		matrixStored_[pointer_].matrixVectorProduct(x,y);
 	}
-
-//	HamiltonianElementType operator()(SizeType i,SizeType j) const
-//	{
-//		return matrixStored_[pointer_](i,j);
-//	}
 
 private:
 	ModelType const *model_;

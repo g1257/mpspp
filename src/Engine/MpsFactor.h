@@ -88,21 +88,21 @@ public:
 	typedef PsimagLite::Vector<SizeType>::Type VectorSizeType;
 
 	MpsFactor(SizeType aOrB)
-	    : rng_(0),aOrB_(aOrB)
+		: rng_(0),aOrB_(aOrB)
 	{}
 
 	void setRandom(SizeType site,SizeType n)
 	{
 		data_.resize(n,n);
 		data_.makeDiagonal(n,1.0);
-//		assert(isNormalized(data_));
+		//		assert(isNormalized(data_));
 	}
 
 	template<typename SomeTruncationType>
 	void move(SomeTruncationType& truncation,
-	          const VectorType& v,
-	          SizeType symmetrySector,
-	          const SymmetryFactorType& symm)
+			  const VectorType& v,
+			  SizeType symmetrySector,
+			  const SymmetryFactorType& symm)
 	{
 		SizeType row = symm.left().size();
 		SizeType col = symm.right().size();
@@ -143,9 +143,9 @@ private:
 
 	template<typename SomeTruncationType>
 	void moveFromVector(const MatrixType& m,
-	                    SomeTruncationType& truncation,
-	                    const SymmetryFactorType& symm,
-	                    SizeType qt)
+						SomeTruncationType& truncation,
+						const SymmetryFactorType& symm,
+						SizeType qt)
 	{
 		const SymmetryComponentType& summed = (aOrB_==TYPE_A) ? symm.left() : symm.right();
 		const SymmetryComponentType& nonSummed = (aOrB_==TYPE_A) ? symm.right() : symm.left();
@@ -202,11 +202,11 @@ private:
 	}
 
 	void setThisSector(MatrixType& u,
-	                   SizeType istart,
-	                   SizeType itotal,
-	                   SizeType jstart,
-	                   SizeType jtotal,
-	                   const MatrixType& m) const
+					   SizeType istart,
+					   SizeType itotal,
+					   SizeType jstart,
+					   SizeType jtotal,
+					   const MatrixType& m) const
 	{
 		for (SizeType i=0;i<itotal;i++) {
 			for (SizeType j=0;j<jtotal;j++) {
@@ -216,12 +216,11 @@ private:
 	}
 
 	void setFinalU(MatrixType& finalU,
-	               SizeType istart,
-	               SizeType itotal,
-	               SizeType jtotal,
-	               const MatrixType& u) const
+				   SizeType istart,
+				   SizeType itotal,
+				   SizeType jtotal,
+				   const MatrixType& u) const
 	{
-		// std::cout<<"setFinalU from "<<istart<<" to "<<(istart+itotal-1)<<"\n";
 		SizeType n = u.n_row();
 		SizeType min = std::min(itotal,jtotal);
 		assert(u.n_row()==u.n_col());
@@ -234,20 +233,17 @@ private:
 
 	template<typename SomeTruncationType>
 	void setFinalS(SomeTruncationType& truncation,
-	               SizeType jstart,
-	               SizeType jtotal,
-	               const VectorRealType& s) const
+				   SizeType jstart,
+				   SizeType jtotal,
+				   const VectorRealType& s) const
 	{
-		//	std::cout<<"setFinalS from "<<jstart<<" to "<<(jstart+jtotal-1)<<"\n";
 		SizeType n = std::min(jtotal,static_cast<SizeType>(s.size()));
 		for (SizeType j=0;j<n;j++) {
 			//			assert(j+jstart<finalS.size());
 			//			if (fabs(s[j])<1e-6) continue;
 			if (j+jstart>=truncation.size()) continue;
 			truncation(j+jstart) = s[j];
-			//			std::cout<<"s["<<j<<"]="<<s[j]<<" ";
 		}
-		//		std::cout<<"\n";
 	}
 
 
@@ -273,7 +269,7 @@ private:
 	}
 
 	void findNonZeroCols(VectorSizeType& vcols,
-	                     const MatrixType& m) const
+						 const MatrixType& m) const
 	{
 		SizeType rows = m.n_row();
 		SizeType cols = m.n_col();
@@ -293,7 +289,7 @@ private:
 	}
 
 	void resizeU(MatrixType& m,
-	             SizeType smallSize)
+				 SizeType smallSize)
 	{
 		if (m.n_col() == smallSize) return;
 		SizeType rows = m.n_row();
@@ -317,62 +313,4 @@ private:
 
 /*@}*/
 #endif // MPS_FACTOR_TYPE_H
-
-
-
-/* Might need these functions later
-
-	// MIGHT NEED this
-	template<typename SomeTruncationType>
-	bool isCorrectSvd(const MatrixType& mat,
-	                  const MatrixType& u,
-	                  SomeTruncationType& truncation,
-	                  const MatrixType& vt) const
-	{
-		MatrixType m(u.n_row(),vt.n_col());
-		truncation.recoverSvd(m,u,vt);
-		std::cout<<"recovering matrix from svd:\n";
-		std::cout<<m;
-		for (SizeType i=0;i<m.n_row();i++) {
-			for (SizeType j=0;j<m.n_col();j++)
-				if (fabs(m(i,j)-mat(i,j))>1e-6) return false;
-		}
-		return true;
-	}
-
-	// MIGHT NEED for asserts
-	bool respectsSymmetry(const MatrixType& m,
-	                      const SymmetryComponentType& summed) const
-	{
-		assert(m.n_row()==summed.size());
-		for (SizeType i=0;i<m.n_row();i++) {
-			SizeType qa = summed.qn(i);
-			for (SizeType j=0;j<m.n_col();j++) {
-				SizeType qk = summed.qn(j);
-				if (qa==qk) continue;
-				if (fabs(m(i,j))>1e-6)
-					return false;
-			}
-		}
-
-		return true;
-	}
-
-	// MIGHT NEED
-void setFinalVt(MatrixType& finalVt,
-                SizeType istart,
-                SizeType itotal,
-                SizeType jstart,
-                SizeType jtotal,
-                const MatrixType& vt) const
-{
-	std::cout<<"setFinalU from "<<istart<<" to "<<(istart+itotal-1)<<"\n";
-	for (SizeType i=0;i<jtotal;i++) {
-		for (SizeType j=0;j<jtotal;j++) {
-			finalVt(i+jstart,j+istart) = vt(i,j);
-		}
-	}
-}
-
-*/
 

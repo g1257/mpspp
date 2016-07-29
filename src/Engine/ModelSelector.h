@@ -78,7 +78,7 @@ public:
 	GeometryType> ModelBaseType;
 
 	ModelSelector(const PsimagLite::String& name)
-	    : name_(name),model_(0)
+		: name_(name),model_(0)
 	{}
 
 	~ModelSelector()
@@ -87,8 +87,8 @@ public:
 	}
 
 	const ModelBaseType& operator()(const ParametersSolverType& solverParams,
-	                                InputValidatorType& io,
-	                                const GeometryType& geometry)
+									InputValidatorType& io,
+									const GeometryType& geometry)
 	{
 		if (name_ == "HubbardOneBand") {
 			model_ = new HubbardOneOrbitalType(solverParams,io,geometry);

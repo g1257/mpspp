@@ -63,7 +63,7 @@ class FermionSign {
 public:
 
 	FermionSign(const ModelType& model,SizeType site)
-	    : model_(model),site_(site)
+		: model_(model),site_(site)
 	{}
 
 	SizeType electronsFromQn(SizeType qn) const

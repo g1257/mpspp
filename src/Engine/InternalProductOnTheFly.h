@@ -85,6 +85,7 @@ private:
 
 	ModelType const *model_;
 	ModelHelperType const *modelHelper_;
+
 }; // class InternalProductOnTheFly
 }  // namespace Mpspp
 

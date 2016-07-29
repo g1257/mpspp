@@ -62,7 +62,7 @@ public:
 	typedef std::pair<SparseMatrixType,int> PairType;
 
 	Operator(const SparseMatrixType& m, int f)
-	    :data_(m),fermionSign_(f)
+		:data_(m),fermionSign_(f)
 	{}
 
 	Operator()

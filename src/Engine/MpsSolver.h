@@ -60,7 +60,7 @@ namespace Mpspp {
 		*/
 
 template<typename ModelBaseType,
-         template<typename,typename> class InternalProductTemplate>
+		 template<typename,typename> class InternalProductTemplate>
 class MpsSolver {
 
 	typedef typename ModelBaseType::ParametersSolverType ParametersSolverType;
@@ -76,19 +76,19 @@ class MpsSolver {
 	typedef Step<ModelBaseType,InternalProductTemplate> StepType;
 
 	enum {TO_THE_RIGHT = ProgramGlobals::TO_THE_RIGHT,
-	      TO_THE_LEFT = ProgramGlobals::TO_THE_LEFT};
+		  TO_THE_LEFT = ProgramGlobals::TO_THE_LEFT};
 
 public:
 
 	MpsSolver(const ParametersSolverType& solverParams,
-	          const ModelBaseType& model,
-	          InputValidatorType& io)
-	    : solverParams_(solverParams),
-	      model_(model),
-	      io_(io),
-	      progress_("MpsSolver"),
-	      stepCurrent_(0),
-	      sitesIndices_(model.geometry().numberOfSites())
+			  const ModelBaseType& model,
+			  InputValidatorType& io)
+		: solverParams_(solverParams),
+		  model_(model),
+		  io_(io),
+		  progress_("MpsSolver"),
+		  stepCurrent_(0),
+		  sitesIndices_(model.geometry().numberOfSites())
 	{
 		for (SizeType i=0;i<sitesIndices_.size();i++) sitesIndices_[i] = i;
 	}
@@ -100,8 +100,6 @@ public:
 		ContractedLocalType contracted(psi,model_.hamiltonian());
 
 		SizeType center = 0;
-
-		//	growLattice(psi,contracted,center,symm);
 		initialGuess(psi,contracted,center,symm);
 
 		if (solverParams_.options.find("nofiniteloops")!=PsimagLite::String::npos)
@@ -114,9 +112,9 @@ public:
 private:
 
 	void initialGuess(MpsLocalType& psi,
-	                  ContractedLocalType& contracted,
-	                  SizeType& center,
-	                  SymmetryLocalType& symm)
+					  ContractedLocalType& contracted,
+					  SizeType& center,
+					  SymmetryLocalType& symm)
 	{
 
 		StepType step(solverParams_,psi,contracted,model_,io_);
@@ -156,8 +154,8 @@ private:
 	}
 
 	void printProgress(const SymmetryLocalType& symm,
-	                   SizeType center,
-	                   const PsimagLite::String& direction) const
+					   SizeType center,
+					   const PsimagLite::String& direction) const
 	{
 		PsimagLite::OstringStream msg;
 		msg<<"center="<<center<<" direction="<<direction;
@@ -168,20 +166,6 @@ private:
 		msg<<" right space="<<symm(siteForSymm).right().size()<<"\n";
 		progress_.printline(msg,std::cout);
 	}
-
-//	void printMemoryUsage() const
-//	{
-//		PsimagLite::MemoryUsage musage;
-//		PsimagLite::String vmPeak = musage.findEntry("VmPeak:");
-//		PsimagLite::String vmSize = musage.findEntry("VmSize:");
-//		PsimagLite::OstringStream msg;
-//		msg<<"Current virtual memory is "<<vmSize<<" maximum was "<<vmPeak;
-//		progress_.printline(msg,std::cout);
-//		PsimagLite::OstringStream msg2;
-//		msg2<<"Amount of time scheduled (user plus system): ";
-//		msg2<<musage.time()<<" clock ticks";
-//		progress_.printline(msg2,std::cout);
-//	}
 
 	const ParametersSolverType& solverParams_;
 	const ModelBaseType& model_;
