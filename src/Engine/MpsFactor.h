@@ -106,6 +106,7 @@ public:
 	{
 		SizeType row = symm.left().size();
 		SizeType col = symm.right().size();
+        if (col == 0) col = 1;
 		if (aOrB_==TYPE_B) std::swap(row,col);
 
 		MatrixType m(row,col);
@@ -147,11 +148,16 @@ private:
 						const SymmetryFactorType& symm,
 						SizeType qt)
 	{
+        if (m.n_col() == 1) {
+            fullMatrixToCrsMatrix(data_,m);
+            return;
+        }
+
 		const SymmetryComponentType& summed = (aOrB_==TYPE_A) ? symm.left() : symm.right();
 		const SymmetryComponentType& nonSummed = (aOrB_==TYPE_A) ? symm.right() : symm.left();
 
 		MatrixType finalU(summed.size(),summed.size());
-		assert(m.n_col() == nonSummed.size());
+        assert(m.n_col() == nonSummed.size());
 		assert(m.n_row() == summed.size());
 
 #if 1 

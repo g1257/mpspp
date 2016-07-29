@@ -147,6 +147,7 @@ private:
 				  const MpsLocalType& abState,
 				  const SymmetryHelperType& symm)
 	{
+        if (currentSite+1==L_.size()) return;
 		assert(currentSite+1<L_.size());
 
 		L_[currentSite+1].move(abState.A(currentSite),
