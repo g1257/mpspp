@@ -144,7 +144,10 @@ private:
 					step.moveRight(symm,center,fl);
 					printProgress(symm,center,"to the right");
 					center++;
-					if (center==nsites) break;
+                    if (center==nsites) {
+                        center--;
+                        break;
+                    }
 					if (counter==0) break;
 					counter--;
 					if (counter==0) break;
