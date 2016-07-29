@@ -69,6 +69,12 @@ public:
 		if (optsReadable_!=0) delete optsReadable_;
 	}
 
+	bool checkSimpleLabel(const PsimagLite::String& label,
+	                      SizeType line) const
+	{
+		return true;
+	}
+
 
 	bool check(const PsimagLite::String& label,const VectorStringType& vec,size_t line) const
 	{

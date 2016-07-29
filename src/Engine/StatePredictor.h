@@ -68,7 +68,7 @@ public:
 		for (SizeType i=offset;i<final;i++) {
 			myRandomT(tmp);
 			y[i]=tmp;
-			atmp += std::real(y[i]*std::conj(y[i]));
+			atmp += PsimagLite::real(y[i]*PsimagLite::conj(y[i]));
 		}
 
 		atmp = 1.0 / sqrt (atmp);

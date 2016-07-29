@@ -260,7 +260,7 @@ private:
 			for (SizeType j=0;j<cols;j++) {
 				ComplexOrRealType sum = 0;
 				for (SizeType k=0;k<rows;k++) {
-					sum += m(k,i) * std::conj(m(k,j));
+					sum += m(k,i) * PsimagLite::conj(m(k,j));
 				}
 				if (i==j && fabs(sum-1.0)>1e-5)
 					c++;
@@ -281,7 +281,7 @@ private:
 		for (SizeType i=0;i<cols;++i) {
 			ComplexOrRealType sum = 0;
 			for (SizeType k=0;k<rows;++k)
-				sum += m(k,i) * std::conj(m(k,i));
+				sum += m(k,i) * PsimagLite::conj(m(k,i));
 
 			if (fabs(sum)<1e-6) continue;
 			assert(c < vcols.size());

@@ -195,7 +195,7 @@ private:
 					for (int k=l1.getRowPtr(a1);k<l1.getRowPtr(a1+1);k++) {
 						SizeType a1p = l1.getCol(k);
 						ComplexOrRealType tmp= l1.getValue(k)*
-						        std::conj(Atranspose.getValue(k3));
+						        PsimagLite::conj(Atranspose.getValue(k3));
 						for (int kp=w.getRowPtr(sigma2);kp<w.getRowPtr(sigma2+1);kp++) {
 							SizeType sigma2p = w.getCol(kp);
 							SizeType j = symm.left().pack(a1p,sigma2p);
@@ -371,7 +371,7 @@ private:
 				RealType fermionSign = 1.0;
 				for (int k=w.getRowPtr(sigmalm1);k<w.getRowPtr(sigmalm1+1);k++) {
 					SizeType sigmaplm1 = w.getCol(k);
-					ComplexOrRealType tmp = std::conj(Bmatrix.getValue(kb))*w.getValue(k);
+					ComplexOrRealType tmp = PsimagLite::conj(Bmatrix.getValue(kb))*w.getValue(k);
 					for (int kprev=dataPrev[blm1].getRowPtr(alm1);
 					     kprev<dataPrev[blm1].getRowPtr(alm1+1);
 					     kprev++) {
@@ -429,7 +429,7 @@ private:
 				RealType fermionSign = 1.0;
 				for (int k=w.getRowPtr(sigma);k<w.getRowPtr(sigma+1);k++) {
 					SizeType sigmap = w.getCol(k);
-					ComplexOrRealType tmp = std::conj(Bmatrix.getValue(kb))*w.getValue(k);
+					ComplexOrRealType tmp = PsimagLite::conj(Bmatrix.getValue(kb))*w.getValue(k);
 					for (int kprev=dataPrev[blm1].getRowPtr(a);
 					     kprev<dataPrev[blm1].getRowPtr(a+1);
 					     kprev++) {
@@ -487,7 +487,7 @@ private:
 			RealType fermionSign = 1.0;
 			for (int k=w.getRowPtr(sigmalm1);k<w.getRowPtr(sigmalm1+1);k++) {
 				SizeType sigmaplm1 = w.getCol(k);
-				ComplexOrRealType tmp = std::conj(Bmatrix.getValue(kb))*w.getValue(k);
+				ComplexOrRealType tmp = PsimagLite::conj(Bmatrix.getValue(kb))*w.getValue(k);
 
 				for (int kb2=Bmatrix.getRowPtr(sigmaplm1);
 				     kb2<Bmatrix.getRowPtr(sigmaplm1+1);
