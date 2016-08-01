@@ -133,9 +133,8 @@ public:
 			std::cout<<"moved A["<<currentSite<<"].row= ";
 			std::cout<<A_[currentSite]->operator()().row()<<"\n";
 		} else {
-			SizeType nsites = symm.super().block().size();
-			SizeType siteToSet = nsites - 1 - currentSite;
-			assert(siteToSet<nsites);
+			SizeType siteToSet = nsites_ - 1 - currentSite;
+			assert(siteToSet<nsites_);
 
 			if (siteToSet==B_.size()) {
 				MpsFactorType* mpsFactor = new MpsFactorType(MpsFactorType::TYPE_B);
