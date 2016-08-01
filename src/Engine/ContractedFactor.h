@@ -267,7 +267,10 @@ private:
 	{
 		SizeType nsites = symm.symmLocal().size();
 		SizeType middle = static_cast<SizeType>(nsites/2);
-		if (currentSite >= middle) {
+
+		const DataType* dataPrevCopy = (dataPrev && dataPrev->size() == 1) ? 0 : dataPrev;
+
+		if (currentSite >= middle && dataPrevCopy) {
 			const SymmetryComponentType& symmC =
 					symm.symmLocal()(nsites-currentSite-1).right();
 			SizeType someSize = B().row()/symmC.split();
@@ -291,7 +294,7 @@ private:
 								   B,
 								   Btranspose,
 								   h,
-								   *dataPrev,
+								   *dataPrevCopy,
 								   symm,
 								   currentSite);
 				}
@@ -319,7 +322,7 @@ private:
 
 		for (SizeType alm2=0;alm2<m.row();alm2++) {
 			m.setRow(alm2,counter);
-			moveRight(values,cols,alm2,blm2,B,Btranspose,h,dataPrev,symm,currentSite);
+			moveRight(values,cols,alm2,blm2,B,Btranspose,h,dataPrevCopy,symm,currentSite);
 			for (SizeType i=0;i<cols.size();i++) {
 				if (cols[i]==0) continue;
 				cols[i]=0;
@@ -329,6 +332,7 @@ private:
 				counter++;
 			}
 		}
+
 		m.setRow(m.row(),counter);
 		m.checkValidity();
 	}
@@ -465,13 +469,13 @@ private:
 						const SparseMatrixType& Btranspose,
 						const MpoFactorType& h,
 						const SymmetryHelperType& symmHelper,
-						SizeType currentSite)
+						SizeType)
 	{
-		SizeType nsites = symmHelper.symmLocal().size();
-		SizeType middle = static_cast<SizeType>(nsites/2);
-		SizeType siteForSymm = (currentSite<middle) ? currentSite : nsites-currentSite-1;
+		//SizeType nsites = symmHelper.symmLocal().size();
+		//SizeType middle = static_cast<SizeType>(nsites/2);
+		SizeType siteForSymm = 0;
 		const SymmetryFactorType& symm = symmHelper.symmLocal()(siteForSymm);
-		const SymmetryComponentType& symmC = (currentSite<middle) ? symm.right(): symm.left();
+		const SymmetryComponentType& symmC = symm.right();
 
 		const SparseMatrixType& Bmatrix = B();
 
