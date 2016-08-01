@@ -154,15 +154,19 @@ public:
 
 	SizeType pack(SizeType a1,SizeType a2) const
 	{
-		assert(a1+a2*leftSize_<permutationInverse_.size());
+
 		if (leftSize_==0 && type_==COMPONENT_LEFT) {
 			assert(a1==0);
+			assert(a2 < permutationInverse_.size());
 			return permutationInverse_[a2];
 		}
 		if (leftSize_==0 && type_==COMPONENT_RIGHT) {
 			assert(a2==0);
+			assert(a1 < permutationInverse_.size());
 			return permutationInverse_[a1];
 		}
+
+		assert(a1+a2*leftSize_<permutationInverse_.size());
 		return permutationInverse_[a1+a2*leftSize_];
 	}
 

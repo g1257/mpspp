@@ -214,6 +214,7 @@ public:
 						PairType tmpPair1 = symm.right().unpack(ab.second);
 						alB=tmpPair1.second;
 						sigmaL=tmpPair1.first;
+
 						alm1=ab.first;
 					}
 

@@ -178,6 +178,9 @@ private:
 					  SizeType siteForSymm)
 	{
 		SizeType part = (direction == TO_THE_RIGHT) ? ProgramGlobals::PART_RIGHT:ProgramGlobals::PART_LEFT;
+		SizeType numberOfSites = model_.geometry().numberOfSites();
+		if (part == ProgramGlobals::PART_LEFT && siteForSymm == numberOfSites-1)
+			part = ProgramGlobals::PART_RIGHT;
 		const SymmetryFactorType& symm = symmetryHelper.symmLocal()(siteForSymm);
 		SizeType currentSite = symmetryHelper.currentSite();
 		SizeType symmetrySector = getSymmetrySector(direction,symm.super());

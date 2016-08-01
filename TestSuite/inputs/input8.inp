@@ -12,7 +12,7 @@ SolverOptions=InternalProductStored,notruncation
 Version=0.02
 OutputFile=data.txt
 InfiniteLoopKeptStates=1024
-FiniteLoops 1  8 1024 0  
+FiniteLoops 2  8 1024 0  -1 1024 0
 
 TargetElectronsUp=4
 TargetElectronsDown=4
