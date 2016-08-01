@@ -74,24 +74,9 @@ public:
 		return data_.size();
 	}
 
-	void moveLeft(SizeType site,const VectorIntegerType& quantumNumbers)
-	{
-		if (site+1==data_.size()) return;
-		assert(site+1<data_.size());
-		SymmetryFactorType symmFactor = data_[site];
-		SymmetryComponentType onesite(SymmetryComponentType::COMPONENT_LEFT,
-									  0,
-									  site,
-									  quantumNumbers);
-		assert(site+1<data_.size());
-		symmFactor.moveLeft(data_[site].left(),onesite, data_[site+1].right());
-		data_[site] = symmFactor;
-		std::cout<<symmFactor;
-	}
-
 	void initialGuess(SizeType site,
-					  const VectorIntegerType& quantumNumbers,
-					  SizeType nsites)
+	                  const VectorIntegerType& quantumNumbers,
+	                  SizeType nsites)
 	{
 		SizeType middle = nsites/2;
 		SymmetryFactorType symmFactor;
@@ -107,9 +92,9 @@ public:
 			} else {
 				assert(data_.size() > 0);
 				SymmetryComponentType onesite(SymmetryComponentType::COMPONENT_RIGHT,
-											  0,
-											  site,
-											  quantumNumbers);
+				                              0,
+				                              site,
+				                              quantumNumbers);
 				SizeType max = data_.size() - 1;
 				SymmetryComponentType l(SymmetryComponentType::COMPONENT_LEFT);
 				l.combine(data_[max].left(),onesite);
@@ -123,9 +108,9 @@ public:
 
 	template<typename SomeTruncationType>
 	void truncate(SizeType site,
-				  SizeType part,
-				  SizeType cutoff,
-				  const SomeTruncationType& trunc)
+	              SizeType part,
+	              SizeType cutoff,
+	              const SomeTruncationType& trunc)
 	{
 		assert(site<data_.size());
 		data_[site].truncate(part,cutoff,trunc);

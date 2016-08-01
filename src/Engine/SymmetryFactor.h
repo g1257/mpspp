@@ -123,15 +123,6 @@ public:
 		super_.combine(left_,right_);
 	}
 
-	void moveLeft(const SymmetryComponentType& oldLeft,
-				  const SymmetryComponentType& onesite,
-				  const SymmetryComponentType& oldRight)
-	{
-		left_ = oldLeft;
-		right_.combine(onesite,oldRight);
-		super_.combine(left_,right_);
-	}
-
 	template<typename SomeTruncationType>
 	void truncate(SizeType part,SizeType cutoff,const SomeTruncationType& trunc)
 	{

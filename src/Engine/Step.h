@@ -120,16 +120,17 @@ public:
 				  SizeType currentSite,
 				  const FiniteLoop& finiteLoop)
 	{
-		if (currentSite==model_.geometry().numberOfSites()) return;
+		SizeType nsites = model_.geometry().numberOfSites();
+		if (currentSite == nsites) return;
 		VectorIntegerType quantumNumbers;
 		model_.getOneSite(quantumNumbers,currentSite);
 
-		symm.moveLeft(currentSite,quantumNumbers);
+		//symm.moveLeft(currentSite,quantumNumbers);
 		if (currentSite==0) return;
 
 		FermionSign<ModelType> fermionSign(model_,currentSite);
 		SymmetryHelperType symmetryHelper(fermionSign,symm);
-		internalmove(TO_THE_LEFT,symmetryHelper,currentSite);
+		internalmove(TO_THE_LEFT,symmetryHelper,nsites - currentSite - 1);
 		contractedLocal_.move(currentSite,TO_THE_LEFT,symmetryHelper);
 		truncation_(symm,currentSite,ProgramGlobals::PART_RIGHT,finiteLoop.keptStates);
 	}
@@ -178,9 +179,6 @@ private:
 					  SizeType siteForSymm)
 	{
 		SizeType part = (direction == TO_THE_RIGHT) ? ProgramGlobals::PART_RIGHT:ProgramGlobals::PART_LEFT;
-		SizeType numberOfSites = model_.geometry().numberOfSites();
-		if (part == ProgramGlobals::PART_LEFT && siteForSymm == numberOfSites-1)
-			part = ProgramGlobals::PART_RIGHT;
 		const SymmetryFactorType& symm = symmetryHelper.symmLocal()(siteForSymm);
 		SizeType currentSite = symmetryHelper.currentSite();
 		SizeType symmetrySector = getSymmetrySector(direction,symm.super());
@@ -265,12 +263,14 @@ private:
 				minDiff = diff;
 			}
 		}
+
 		if (minDiff!=0) {
 			std::cerr<<__FILE__<<" "<<__LINE__<<"\n";
 			std::cerr<<"getSymmetrySector ";
 			std::cerr<<"WARNING: minDiff="<<minDiff<<" is non zero\n";
 			throw std::runtime_error("error\n");
 		}
+
 		return imin;
 	}
 
@@ -295,10 +295,19 @@ private:
 		VectorIntegerType targetQuantumNumbers(2);
 
 		SizeType nsites = model_.geometry().numberOfSites();
+		SizeType total = solverParams_.electronsUp + solverParams_.electronsDown;
+		total *= sites;
+		total /= nsites;
 		targetQuantumNumbers[0] =
 				SizeType(static_cast<RealType>(solverParams_.electronsUp*sites)/nsites);
 		targetQuantumNumbers[1] =
 				SizeType(static_cast<RealType>(solverParams_.electronsDown*sites)/nsites);
+
+		if (targetQuantumNumbers[0] + targetQuantumNumbers[1] > total)
+			targetQuantumNumbers[0]--;
+
+		if (targetQuantumNumbers[0] + targetQuantumNumbers[1] < total)
+			targetQuantumNumbers[0]++;
 
 		return getQuantumSector(targetQuantumNumbers,direction);
 	}
