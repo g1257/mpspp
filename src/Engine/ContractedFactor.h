@@ -87,17 +87,17 @@ public:
 	typedef typename PsimagLite::Vector<SparseMatrixType>::Type DataType;
 
 	ContractedFactor(SizeType leftOrRight)
-		: data_(1),leftOrRight_(leftOrRight)
+	    : data_(1),leftOrRight_(leftOrRight)
 	{
 		data_[0].makeDiagonal(1,1);
 	}
 
 	//! NEEDED
 	void build(const MpsFactorType& AorB,
-			   const MpoFactorType& h,
-			   const ThisType* prev,
-			   const SymmetryHelperType& symmHelper,
-			   SizeType siteForSymm)
+	           const MpoFactorType& h,
+	           const ThisType* prev,
+	           const SymmetryHelperType& symmHelper,
+	           SizeType siteForSymm)
 	{
 		const DataType* ptr = (prev) ? &prev->data_: 0;
 		if (leftOrRight_==PART_RIGHT) {
@@ -105,7 +105,7 @@ public:
 
 			data_.resize(h.n_row());
 
-			moveRight(AorB,h,ptr,symmHelper,siteForSymm);
+			moveRight(AorB,h,ptr,symmHelper,siteForSymm,true);
 		} else {
 			assert(AorB.type()==MpsFactorType::TYPE_A);
 
@@ -117,14 +117,14 @@ public:
 	//! From As (or Bs) and Ws reconstruct *this
 	//! NEEDED
 	void move(const MpsFactorType& AorB,
-			  const MpoFactorType& h,
-			  const ThisType& dataPrev,
-			  const SymmetryHelperType& symm,
-			  SizeType currentSite)
+	          const MpoFactorType& h,
+	          const ThisType& dataPrev,
+	          const SymmetryHelperType& symm,
+	          SizeType currentSite)
 	{
 		if (leftOrRight_ == PART_RIGHT) {
 			assert(AorB.type()==MpsFactorType::TYPE_B);
-			moveRight(AorB,h,&dataPrev.data_,symm,currentSite);
+			moveRight(AorB,h,&dataPrev.data_,symm,currentSite,false);
 		} else {
 			assert(AorB.type()==MpsFactorType::TYPE_A);
 			moveLeft(AorB,h,&dataPrev.data_,symm,currentSite);
@@ -159,13 +159,13 @@ private:
 
 	/* MOVE LEFT WILL BE NEEDED LATER ------------------------- */
 	void moveLeft(SparseMatrixType& m,
-				  const MpsFactorType& AorB,
-				  const SparseMatrixType& Atranspose,
-				  SizeType b,
-				  const MpoFactorType& h,
-				  const DataType* dataPrevPtr,
-				  const SymmetryHelperType& symmHelper,
-				  SizeType currentSite)
+	              const MpsFactorType& AorB,
+	              const SparseMatrixType& Atranspose,
+	              SizeType b,
+	              const MpoFactorType& h,
+	              const DataType* dataPrevPtr,
+	              const SymmetryHelperType& symmHelper,
+	              SizeType currentSite)
 	{
 		SizeType siteForSymm = currentSite;
 
@@ -195,7 +195,7 @@ private:
 					for (int k=l1.getRowPtr(a1);k<l1.getRowPtr(a1+1);k++) {
 						SizeType a1p = l1.getCol(k);
 						ComplexOrRealType tmp= l1.getValue(k)*
-								PsimagLite::conj(Atranspose.getValue(k3));
+						        PsimagLite::conj(Atranspose.getValue(k3));
 						for (int kp=w.getRowPtr(sigma2);kp<w.getRowPtr(sigma2+1);kp++) {
 							SizeType sigma2p = w.getCol(kp);
 							SizeType j = symm.left().pack(a1p,sigma2p);
@@ -223,10 +223,10 @@ private:
 	}
 
 	void moveLeft(const MpsFactorType& A,
-				  const MpoFactorType& h,
-				  const DataType* dataPrev,
-				  const SymmetryHelperType& symm,
-				  SizeType currentSite)
+	              const MpoFactorType& h,
+	              const DataType* dataPrev,
+	              const SymmetryHelperType& symm,
+	              SizeType currentSite)
 	{
 		assert(leftOrRight_ == PART_LEFT);
 		assert(A.type()==MpsFactorType::TYPE_A);
@@ -240,10 +240,11 @@ private:
 	}
 
 	void moveRight(const MpsFactorType& B,
-				   const MpoFactorType& h,
-				   const DataType* dataPrev,
-				   const SymmetryHelperType& symm,
-				   SizeType siteForSymm)
+	               const MpoFactorType& h,
+	               const DataType* dataPrev,
+	               const SymmetryHelperType& symm,
+	               SizeType siteForSymm,
+	               bool isInitialGuess)
 	{
 		assert(leftOrRight_ == PART_RIGHT);
 		assert(B.type()==MpsFactorType::TYPE_B);
@@ -253,26 +254,27 @@ private:
 			data_.resize(h.n_row());
 		assert(h.n_row()==data_.size());
 		for (SizeType blm2=0;blm2<data_.size();blm2++)
-			moveRight(data_[blm2],blm2,B,Btranspose,h,dataPrev,symm,siteForSymm);
+			moveRight(data_[blm2],blm2,B,Btranspose,h,dataPrev,symm,siteForSymm,isInitialGuess);
 	}
 
 	void moveRight(SparseMatrixType& m,
-				   SizeType blm2,
-				   const MpsFactorType& B,
-				   const SparseMatrixType& Btranspose,
-				   const MpoFactorType& h,
-				   const DataType* dataPrev,
-				   const SymmetryHelperType& symm,
-				   SizeType currentSite)
+	               SizeType blm2,
+	               const MpsFactorType& B,
+	               const SparseMatrixType& Btranspose,
+	               const MpoFactorType& h,
+	               const DataType* dataPrev,
+	               const SymmetryHelperType& symm,
+	               SizeType currentSite,
+	               bool isInitialGuess)
 	{
 		SizeType nsites = symm.symmLocal().size();
 		SizeType middle = static_cast<SizeType>(nsites/2);
 
 		const DataType* dataPrevCopy = (dataPrev && dataPrev->size() == 1) ? 0 : dataPrev;
 
-		if (currentSite >= middle && dataPrevCopy) {
+		if (currentSite >= middle && dataPrevCopy && isInitialGuess) {
 			const SymmetryComponentType& symmC =
-					symm.symmLocal()(nsites-currentSite-1).right();
+			        symm.symmLocal()(nsites-currentSite-1).right();
 			SizeType someSize = B().row()/symmC.split();
 			m.resize(someSize,someSize);
 
@@ -285,18 +287,18 @@ private:
 
 				for (SizeType sigma = 0; sigma < symmC.split(); ++sigma){
 
-					SizeType sigmalm1alm1 = symmC.pack(alm2,sigma);
+					SizeType sigmalm1alm1 = symmC.pack(sigma,alm2);
 
 					moveRightRight(values,
-								   cols,
-								   sigmalm1alm1,
-								   blm2,
-								   B,
-								   Btranspose,
-								   h,
-								   *dataPrevCopy,
-								   symm,
-								   currentSite);
+					               cols,
+					               sigmalm1alm1,
+					               blm2,
+					               B,
+					               Btranspose,
+					               h,
+					               *dataPrevCopy,
+					               symm,
+					               currentSite);
 				}
 
 				for (SizeType i=0;i<cols.size();i++) {
@@ -320,9 +322,11 @@ private:
 		VectorIntegerType cols(m.row(),0);
 		VectorType values(m.row(),0.0);
 
+		SizeType siteForSymm = (currentSite<middle) ? currentSite : nsites-currentSite-1;
+
 		for (SizeType alm2=0;alm2<m.row();alm2++) {
 			m.setRow(alm2,counter);
-			moveRight(values,cols,alm2,blm2,B,Btranspose,h,dataPrevCopy,symm,currentSite);
+			moveRight(values,cols,alm2,blm2,B,Btranspose,h,dataPrevCopy,symm,siteForSymm);
 			for (SizeType i=0;i<cols.size();i++) {
 				if (cols[i]==0) continue;
 				cols[i]=0;
@@ -339,18 +343,16 @@ private:
 
 
 	void moveRight(VectorType& values,
-				   VectorIntegerType& cols,
-				   SizeType alm2,
-				   SizeType blm2,
-				   const MpsFactorType& B,
-				   const SparseMatrixType& Btranspose,
-				   const MpoFactorType& h,
-				   const DataType* dataPrevPtr,
-				   const SymmetryHelperType& symmHelper,
-				   SizeType currentSite)
+	               VectorIntegerType& cols,
+	               SizeType alm2,
+	               SizeType blm2,
+	               const MpsFactorType& B,
+	               const SparseMatrixType& Btranspose,
+	               const MpoFactorType& h,
+	               const DataType* dataPrevPtr,
+	               const SymmetryHelperType& symmHelper,
+	               SizeType siteForSymm)
 	{
-		SizeType siteForSymm = currentSite;
-
 		if (!dataPrevPtr)
 			return moveRightFirst(values,cols,alm2,blm2,B,Btranspose,h,symmHelper,siteForSymm);
 
@@ -377,16 +379,16 @@ private:
 					SizeType sigmaplm1 = w.getCol(k);
 					ComplexOrRealType tmp = PsimagLite::conj(Bmatrix.getValue(kb))*w.getValue(k);
 					for (int kprev=dataPrev[blm1].getRowPtr(alm1);
-						 kprev<dataPrev[blm1].getRowPtr(alm1+1);
-						 kprev++) {
+					     kprev<dataPrev[blm1].getRowPtr(alm1+1);
+					     kprev++) {
 						SizeType aplm1 = dataPrev[blm1].getCol(kprev);
 						SizeType i = symmC.pack(sigmaplm1,aplm1);
 						for (int kb2=Btranspose.getRowPtr(i);
-							 kb2<Btranspose.getRowPtr(i+1);
-							 kb2++) {
+						     kb2<Btranspose.getRowPtr(i+1);
+						     kb2++) {
 							SizeType aplm2 = Btranspose.getCol(kb2);
 							values[aplm2] += tmp*Btranspose.getValue(kb2)*
-									dataPrev[blm1].getValue(kprev)*fermionSign;
+							        dataPrev[blm1].getValue(kprev)*fermionSign;
 							cols[aplm2]=1;
 						} // kb2
 					} // kprev
@@ -397,15 +399,15 @@ private:
 
 	//! NEEDED
 	void moveRightRight(VectorType& values,
-						VectorIntegerType& cols,
-						SizeType alm2,
-						SizeType blm2,
-						const MpsFactorType& B,
-						const SparseMatrixType& Btranspose,
-						const MpoFactorType& h,
-						const DataType& dataPrev,
-						const SymmetryHelperType& symmHelper,
-						SizeType currentSite)
+	                    VectorIntegerType& cols,
+	                    SizeType alm2,
+	                    SizeType blm2,
+	                    const MpsFactorType& B,
+	                    const SparseMatrixType& Btranspose,
+	                    const MpoFactorType& h,
+	                    const DataType& dataPrev,
+	                    const SymmetryHelperType& symmHelper,
+	                    SizeType currentSite)
 	{
 
 		SizeType nsites = symmHelper.symmLocal().size();
@@ -417,7 +419,7 @@ private:
 		const SparseMatrixType& Bmatrix = B();
 
 		assert(symmC.split()==0 ||
-			   symmC.size()==dataPrev[0].row());
+		       symmC.size()==dataPrev[0].row());
 		assert(Btranspose.col()==symmC.size());
 		assert(dataPrev.size()<=h.n_row());
 
@@ -435,19 +437,19 @@ private:
 					SizeType sigmap = w.getCol(k);
 					ComplexOrRealType tmp = PsimagLite::conj(Bmatrix.getValue(kb))*w.getValue(k);
 					for (int kprev=dataPrev[blm1].getRowPtr(a);
-						 kprev<dataPrev[blm1].getRowPtr(a+1);
-						 kprev++) {
+					     kprev<dataPrev[blm1].getRowPtr(a+1);
+					     kprev++) {
 						SizeType ap = dataPrev[blm1].getCol(kprev);
 						//SizeType i = symmC.pack(sigmap,ap);
 						for (int kb2=Btranspose.getRowPtr(ap);
-							 kb2<Btranspose.getRowPtr(ap+1);
-							 kb2++) {
+						     kb2<Btranspose.getRowPtr(ap+1);
+						     kb2++) {
 							SizeType col = Btranspose.getCol(kb2);
 							PairType apbar = symmC.unpack(col);
 							assert(apbar.first < symmC.split());
 							if (apbar.first != sigmap) continue;
 							values[apbar.second] += tmp*Btranspose.getValue(kb2)*
-									dataPrev[blm1].getValue(kprev)*fermionSign;
+							        dataPrev[blm1].getValue(kprev)*fermionSign;
 							cols[apbar.second]=1;
 						} // kb2
 					} // kprev
@@ -462,14 +464,14 @@ private:
 	*/
 	//! NEEDED
 	void moveRightFirst(VectorType& values,
-						VectorIntegerType& cols,
-						SizeType alm2,
-						SizeType blm2,
-						const MpsFactorType& B,
-						const SparseMatrixType& Btranspose,
-						const MpoFactorType& h,
-						const SymmetryHelperType& symmHelper,
-						SizeType)
+	                    VectorIntegerType& cols,
+	                    SizeType alm2,
+	                    SizeType blm2,
+	                    const MpsFactorType& B,
+	                    const SparseMatrixType& Btranspose,
+	                    const MpoFactorType& h,
+	                    const SymmetryHelperType& symmHelper,
+	                    SizeType)
 	{
 		//SizeType nsites = symmHelper.symmLocal().size();
 		//SizeType middle = static_cast<SizeType>(nsites/2);
@@ -494,8 +496,8 @@ private:
 				ComplexOrRealType tmp = PsimagLite::conj(Bmatrix.getValue(kb))*w.getValue(k);
 
 				for (int kb2=Bmatrix.getRowPtr(sigmaplm1);
-					 kb2<Bmatrix.getRowPtr(sigmaplm1+1);
-					 kb2++) {
+				     kb2<Bmatrix.getRowPtr(sigmaplm1+1);
+				     kb2++) {
 					SizeType aplm2 = Bmatrix.getCol(kb2);
 					values[aplm2] += tmp*Bmatrix.getValue(kb2)*fermionSign;
 					cols[aplm2]=1;
