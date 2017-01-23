@@ -175,7 +175,9 @@ public:
 		SizeType total = symm.super().partitionSize(symmetrySector_);
 
 		SizeType leftIndex = currentSite_;
-		SizeType rightIndex = (currentSite_ < middle) ? currentSite_ + 1: nsites - currentSite_ - 1;
+		SizeType rightIndex =
+		        (currentSite_ < middle) ? currentSite_ + 1: nsites - currentSite_ - 1;
+		if (part_ == PART_LEFT && currentSite_ < middle) rightIndex -= 2;
 
 		matrix.resize(total,total);
 		const ContractedFactorType& cL = contractedPart_(leftIndex,
@@ -186,6 +188,7 @@ public:
 		SizeType counter = 0;
 		assert(hamiltonian_.n_row()>=cL.size());
 		assert(hamiltonian_.n_col()>=cR.size());
+		assert(part_ == PART_RIGHT || symm.left().size() == cL(0).row());
 
 		for (SizeType i=0;i<total;i++) {
 			matrix.setRow(i,counter);

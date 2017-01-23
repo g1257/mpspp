@@ -130,7 +130,10 @@ public:
 
 		FermionSign<ModelType> fermionSign(model_,currentSite);
 		SymmetryHelperType symmetryHelper(fermionSign,symm);
-		internalmove(TO_THE_LEFT,symmetryHelper,nsites - currentSite - 1);
+		SizeType middle = static_cast<SizeType>(nsites/2);
+		SizeType siteForSymm =
+		        (currentSite < middle) ? currentSite - 1 : nsites - currentSite - 1;
+		internalmove(TO_THE_LEFT,symmetryHelper,siteForSymm);
 		contractedLocal_.move(currentSite,TO_THE_LEFT,symmetryHelper);
 		truncation_(symm,currentSite,ProgramGlobals::PART_RIGHT,finiteLoop.keptStates);
 	}
