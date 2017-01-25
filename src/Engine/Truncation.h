@@ -68,8 +68,11 @@ class Truncation {
 
 public:
 
-	Truncation(MpsLocalType& mps,ContractedLocalType& contracted,bool enabled)
-	    : mps_(mps),contracted_(contracted),enabled_(enabled)
+	Truncation(MpsLocalType& mps,
+	           ContractedLocalType& contracted,
+	           bool enabled,
+	           SizeType numberOfSites)
+	    : mps_(mps),contracted_(contracted),enabled_(enabled),numberOfSites_(numberOfSites)
 	{}
 
 	void setSize(SizeType size)
@@ -101,7 +104,7 @@ public:
 		}
 
 		order();
-		SizeType nsites = symm(siteForSymm).super().block().size();
+		SizeType nsites = numberOfSites_;
 		mps_.truncate(site,part,cutoff,nsites,*this);
 		contracted_.truncate(site,part,cutoff,nsites,*this);
 
@@ -195,6 +198,7 @@ private:
 	MpsLocalType& mps_;
 	ContractedLocalType& contracted_;
 	bool enabled_;
+	SizeType numberOfSites_;
 	VectorRealType s_;
 	VectorIntegerType perm_;
 

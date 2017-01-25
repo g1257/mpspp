@@ -112,7 +112,8 @@ public:
 		  statePredictor_(),
 		  truncation_(mps,
 					  contractedLocal,
-					  solverParams_.options.find("notruncation")==PsimagLite::String::npos)
+					  solverParams_.options.find("notruncation")==PsimagLite::String::npos,
+	                  model_.geometry().numberOfSites())
 	{}
 
 	//! Moves the center of orthogonality by one to the left
@@ -162,6 +163,7 @@ public:
 		for (SizeType i = 0; i< nsites; ++i){
 			symm.initialGuess(i,quantumNumbers,nsites);
 		}
+
 		for (SizeType i = 0; i< nsites; ++i){
 			mps_.initialGuess(i,symm,nsites);
 		}
@@ -252,7 +254,7 @@ private:
 	SizeType getSymmetrySector(SizeType direction,
 							   const SymmetryComponentType& super) const
 	{
-		SizeType sites = super.block().size();
+		SizeType sites = model_.geometry().numberOfSites();
 		SizeType targetQuantumNumber = getQuantumSector(sites,direction);
 		SizeType imin=0;
 		SizeType minDiff=0;

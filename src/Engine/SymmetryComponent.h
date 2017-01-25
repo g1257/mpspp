@@ -68,24 +68,16 @@ public:
 
 	SymmetryComponent(SizeType type,
 					  SizeType hilbert,
-					  SizeType site,
 					  const VectorIntegerType& quantumNumbers)
 		: type_(type),
 		  leftSize_(hilbert),
-		  block_(1,site),
 		  quantumNumbers_(quantumNumbers)
 	{
-		if (quantumNumbers.size()==1) block_.resize(0);
-
 		findPermutationAndPartition();
 	}
 
 	void combine(const SymmetryComponent& left,const SymmetryComponent& right)
 	{
-		//block_.clear();
-		blockUnion(block_,left.block_,right.block_); //! B= pS.block Union X
-		assert(isValidBlock());
-
 		SizeType ns = left.size();
 		SizeType ne = right.size();
 
@@ -183,18 +175,15 @@ public:
 
 	SizeType split() const { return leftSize_; }
 
-	const VectorIntegerType& block() const { return block_; }
-
 	const bool operator==(const SymmetryComponent& other) const
 	{
 		bool b1 = (type_ == other.type_);
 		bool b2 = (leftSize_ == other.leftSize_);
-		bool b3 = (block_ == other.block_);
 		bool b4 = (quantumNumbers_ == other.quantumNumbers_);
 		bool b5 = (partition_ == other.partition_);
 		bool b6 = (permutation_ == other.permutation_);
 		bool b7 = (permutationInverse_ == other.permutationInverse_);
-		return (b1 && b2 && b3 && b4 && b5 && b6 && b7);
+		return (b1 && b2 && b4 && b5 && b6 && b7);
 	}
 
 	friend std::ostream& operator<<(std::ostream& os,
@@ -206,7 +195,6 @@ private:
 	template<typename IoInputter>
 	void loadInternal(IoInputter& io)
 	{
-		io.read(block_,"#BLOCK");
 		io.read(quantumNumbers_,"#QN");
 		io.read(partition_,"#PARTITION");
 		io.read(permutationInverse_,"#PERMUTATIONINVERSE");
@@ -256,19 +244,8 @@ private:
 		for (SizeType i=0;i<C.size();i++) A.push_back(C[i]);
 	}
 
-	bool isValidBlock() const
-	{
-		if (block_.size()<2) return true;
-		for (SizeType i=0;i<block_.size()-1;i++) {
-			if (block_[i]>=block_[i+1])
-				return false;
-		}
-		return true;
-	}
-
 	SizeType type_;
 	SizeType leftSize_;
-	VectorIntegerType block_;
 	VectorIntegerType quantumNumbers_;
 	VectorIntegerType partition_;
 	VectorIntegerType permutation_;
@@ -279,10 +256,6 @@ std::ostream& operator<<(std::ostream& os,const SymmetryComponent& symm)
 {
 	os<<"type="<<symm.typeToString()<<" leftSize_= ";
 	os<<symm.leftSize_<<" size= "<<symm.quantumNumbers_.size();
-	os<<" block= ";
-	for (SizeType i=0;i<symm.block_.size();i++)
-		os<<symm.block_[i]<<" ";
-	os<<" ";
 	return os;
 }
 

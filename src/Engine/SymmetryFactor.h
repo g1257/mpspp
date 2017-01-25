@@ -67,58 +67,30 @@ public:
 		  super_(SymmetryComponentType::COMPONENT_SUPER)
 	{}
 
-	void growFirst(SizeType site,
-				   const VectorIntegerType& quantumNumbers,
-				   SizeType nsites)
-	{
-		assert(site+1<nsites);
-		VectorIntegerType qn(1,0);
-		SymmetryComponentType onesiteLeft(SymmetryComponentType::COMPONENT_LEFT,0,site,qn);
-		left_ = onesiteLeft;
-
-		SizeType siteRight = nsites - 1 -site;
-		SymmetryComponentType onesiteRight2(SymmetryComponentType::COMPONENT_RIGHT,
-											0,
-											siteRight,
-											qn);
-		SymmetryComponentType onesiteRight3(SymmetryComponentType::COMPONENT_LEFT,
-											0,
-											siteRight,
-											quantumNumbers);
-		right_.combine(onesiteRight3,onesiteRight2);
-
-		super_.combine(left_,right_);
-	}
-
 	void grow(SizeType site,
 			  const VectorIntegerType& quantumNumbers,
 			  const SymmetryFactor* previous,
 			  SizeType nsites)
 	{
 		assert(site+1<nsites);
+		VectorIntegerType q0(1,0);
+
 		SymmetryComponentType onesiteRight(SymmetryComponentType::COMPONENT_LEFT,
 										   1,
-										   site,
-										   quantumNumbers);
-		const SymmetryComponentType* pleft = (previous) ? &previous->left() : 0;
+										   q0);
+
+		const SymmetryComponentType* pleft = (previous) ? &previous->super() : 0;
 
 		if (pleft)
-			left_.combine(*pleft,onesiteRight);
+			left_ = *pleft;
 		else
 			left_ = onesiteRight;
 
-		SizeType siteRight = nsites - 1 -site;
 		SymmetryComponentType onesiteRight3(SymmetryComponentType::COMPONENT_RIGHT,
 											quantumNumbers.size(),
-											siteRight,
-											quantumNumbers);
+											quantumNumbers); // physical
 
-		const SymmetryComponentType* pright = (previous) ? &previous->right() : 0;
-
-		if (pright)
-			right_.combine(onesiteRight3,*pright);
-		else
-			right_ = onesiteRight3;
+		right_ = onesiteRight3; // physical
 
 		super_.combine(left_,right_);
 	}

@@ -178,8 +178,8 @@ public:
 			return;
 		}
 
+		quantumNumbers.push_back(0);
 		quantumNumbers.push_back(1);
-		quantumNumbers.push_back(MAX_SITES);
 	}
 
 private:

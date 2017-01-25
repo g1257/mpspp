@@ -93,7 +93,6 @@ public:
 				assert(data_.size() > 0);
 				SymmetryComponentType onesite(SymmetryComponentType::COMPONENT_RIGHT,
 				                              0,
-				                              site,
 				                              quantumNumbers);
 				SizeType max = data_.size() - 1;
 				SymmetryComponentType l(SymmetryComponentType::COMPONENT_LEFT);
