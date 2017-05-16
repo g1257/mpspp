@@ -112,7 +112,7 @@ public:
 		progress_.printline(msg,std::cout);
 	}
 
-	SizeType rank() const { return matrixStored_[pointer_].row(); }
+	SizeType rows() const { return matrixStored_[pointer_].rows(); }
 
 	template<typename SomeVectorType>
 	void matrixVectorProduct(SomeVectorType &x, SomeVectorType const &y) const

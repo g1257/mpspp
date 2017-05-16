@@ -78,28 +78,28 @@ public:
 	                  const VectorIntegerType& quantumNumbers,
 	                  SizeType nsites)
 	{
-		SizeType middle = nsites/2;
+//		SizeType middle = nsites/2;
 		SymmetryFactorType symmFactor;
 		SymmetryFactorType* ptr = (data_.size() == 0) ? 0 : &data_[data_.size()-1];
-		if (site < middle) {
+//		if (site < middle) {
 			symmFactor.grow(site,quantumNumbers,ptr,nsites);
-		} else {
-			SizeType ref = nsites - site -1;
-			if (ref+1 < data_.size()) {
-				SymmetryComponentType tmp(SymmetryComponentType::COMPONENT_RIGHT);
-				if (ref>0) tmp = data_[ref-1].right();
-				symmFactor.set(data_[ref+1].left(),tmp);
-			} else {
-				assert(data_.size() > 0);
-				SymmetryComponentType onesite(SymmetryComponentType::COMPONENT_RIGHT,
-				                              0,
-				                              quantumNumbers);
-				SizeType max = data_.size() - 1;
-				SymmetryComponentType l(SymmetryComponentType::COMPONENT_LEFT);
-				l.combine(data_[max].left(),onesite);
-				symmFactor.set(l,data_[ref-1].right());
-			}
-		}
+//		} else {
+//			SizeType ref = nsites - site -1;
+//			if (ref+1 < data_.size()) {
+//				SymmetryComponentType tmp(SymmetryComponentType::COMPONENT_RIGHT);
+//				if (ref>0) tmp = data_[ref-1].right();
+//				symmFactor.set(data_[ref+1].left(),tmp);
+//			} else {
+//				assert(data_.size() > 0);
+//				SymmetryComponentType onesite(SymmetryComponentType::COMPONENT_RIGHT,
+//				                              0,
+//				                              quantumNumbers);
+//				SizeType max = data_.size() - 1;
+//				SymmetryComponentType l(SymmetryComponentType::COMPONENT_LEFT);
+//				l.combine(data_[max].left(),onesite);
+//				symmFactor.set(l,data_[ref-1].right());
+//			}
+//		}
 
 		data_.push_back(symmFactor);
 		std::cout<<symmFactor;

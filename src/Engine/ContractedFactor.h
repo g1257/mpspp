@@ -426,7 +426,7 @@ private:
 		for (int kb=Bmatrix.getRowPtr(alm2);kb<Bmatrix.getRowPtr(alm2+1);kb++) {
 
 			SizeType a = Bmatrix.getCol(kb);
-			SizeType sigma = symmC.unpack(alm2).first;
+			SizeType sigma = symm.right().unpack(alm2).first;
 			assert(sigma<symmC.split());
 			for (SizeType blm1=0;blm1<dataPrev.size();blm1++) {
 				const OperatorType& wOp = h(blm2,blm1);

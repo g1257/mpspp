@@ -242,8 +242,8 @@ private:
 		}
 
 		RealType energyTmp = 0;
-		assert(tmpVec.size()==lanczosHelper.rank());
-		VectorType initialVector(lanczosHelper.rank());
+		assert(tmpVec.size()==lanczosHelper.rows());
+		VectorType initialVector(lanczosHelper.rows());
 		statePredictor_.createRandomVector(initialVector,0,initialVector.size());
 
 		lanczosOrDavidson->computeGroundState(energyTmp,tmpVec,initialVector);

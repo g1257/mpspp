@@ -73,7 +73,7 @@ public:
 		modelHelper_=modelHelper;
 	}
 
-	SizeType rank() const { return modelHelper_->size(); }
+	SizeType rows() const { return modelHelper_->size(); }
 
 	template<typename SomeVectorType>
 	void matrixVectorProduct(SomeVectorType &x,SomeVectorType const &y) const
