@@ -65,7 +65,7 @@ public:
 		:data_(m),fermionSign_(f)
 	{}
 
-	Operator()
+	Operator(int  = 0)
 	{}
 
 	ThisType& operator=(const PairType& pair)

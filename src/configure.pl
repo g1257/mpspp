@@ -77,7 +77,9 @@ sub createMakefile
 	my $fh;
 	open($fh,">Makefile") or die "Cannot open Makefile for writing: $!\n";
 
-	Make::newMake($fh,\@drivers,"MPS++"," "," "); #,"operator");
+	my %args;
+	$args{"code"} = "MPS++";
+	Make::newMake($fh,\@drivers,\%args);
 	print STDERR "File Makefile has been written\n";
 }
 
