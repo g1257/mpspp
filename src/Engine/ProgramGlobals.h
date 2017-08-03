@@ -63,6 +63,8 @@ struct ProgramGlobals {
 
 	enum {PART_LEFT,PART_RIGHT};
 
+	enum ConnectionEnum {NONE};
+
 	static const PsimagLite::String license;
 }; // ProgramGlobals
 
