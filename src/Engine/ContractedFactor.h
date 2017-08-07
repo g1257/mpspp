@@ -152,7 +152,7 @@ public:
 	SizeType row() const
 	{
 		assert(data_.size()>0);
-		return data_[0].row();
+		return data_[0].rows();
 	}
 
 private:
@@ -173,13 +173,13 @@ private:
 		const SparseMatrixType& A = AorB();
 		const DataType& dataPrev = *dataPrevPtr;
 
-		m.resize(A.col(),A.col());
+		m.resize(A.cols(),A.cols());
 		SizeType counter=0;
-		VectorIntegerType cols(m.row(),0);
-		VectorType values(m.row(),0.0);
-		assert(symm.left().split()==0 || symm.left().split()==dataPrev[0].row());
-		assert(symm.left().size()==A.row());
-		for (SizeType a2=0;a2<Atranspose.row();a2++) {
+		VectorIntegerType cols(m.rows(),0);
+		VectorType values(m.rows(),0.0);
+		assert(symm.left().split()==0 || symm.left().split()==dataPrev[0].rows());
+		assert(symm.left().size()==A.rows());
+		for (SizeType a2=0;a2<Atranspose.rows();a2++) {
 			m.setRow(a2,counter);
 			for (int k3=Atranspose.getRowPtr(a2);k3<Atranspose.getRowPtr(a2+1);k3++) {
 				PairType a1sigma2 = symm.left().unpack(Atranspose.getCol(k3));
@@ -189,7 +189,7 @@ private:
 				for (SizeType b1=0;b1<h.n_row();b1++) {
 					const OperatorType& wOp = h(b1,b);
 					const SparseMatrixType& w = wOp.matrix();
-					if (w.row()==0) continue;
+					if (w.rows()==0) continue;
 					const SparseMatrixType& l1 = dataPrev[b1];
 
 					for (int k=l1.getRowPtr(a1);k<l1.getRowPtr(a1+1);k++) {
@@ -218,7 +218,7 @@ private:
 			}
 		} // a2
 
-		m.setRow(m.row(),counter);
+		m.setRow(m.rows(),counter);
 		m.checkValidity();
 	}
 
@@ -275,14 +275,14 @@ private:
 		if (currentSite >= middle && dataPrevCopy && isInitialGuess) {
 			const SymmetryComponentType& symmC =
 			        symm.symmLocal()(nsites-currentSite-1).right();
-			SizeType someSize = B().row()/symmC.split();
+			SizeType someSize = B().rows()/symmC.split();
 			m.resize(someSize,someSize);
 
 			SizeType counter = 0;
-			VectorIntegerType cols(m.row(),0);
-			VectorType values(m.row(),0.0);
+			VectorIntegerType cols(m.rows(),0);
+			VectorType values(m.rows(),0.0);
 
-			for (SizeType alm2=0;alm2<m.row();alm2++) {
+			for (SizeType alm2=0;alm2<m.rows();alm2++) {
 				m.setRow(alm2,counter);
 
 				for (SizeType sigma = 0; sigma < symmC.split(); ++sigma){
@@ -310,21 +310,21 @@ private:
 					counter++;
 				}
 			}
-			m.setRow(m.row(),counter);
+			m.setRow(m.rows(),counter);
 			m.checkValidity();
 			return;
 		}
 
-		SizeType someSize = B().row();
+		SizeType someSize = B().rows();
 		m.resize(someSize,someSize);
 
 		SizeType counter = 0;
-		VectorIntegerType cols(m.row(),0);
-		VectorType values(m.row(),0.0);
+		VectorIntegerType cols(m.rows(),0);
+		VectorType values(m.rows(),0.0);
 
 		SizeType siteForSymm = (currentSite<middle) ? currentSite : nsites-currentSite-1;
 
-		for (SizeType alm2=0;alm2<m.row();alm2++) {
+		for (SizeType alm2=0;alm2<m.rows();alm2++) {
 			m.setRow(alm2,counter);
 			moveRight(values,cols,alm2,blm2,B,Btranspose,h,dataPrevCopy,symm,siteForSymm);
 			for (SizeType i=0;i<cols.size();i++) {
@@ -337,7 +337,7 @@ private:
 			}
 		}
 
-		m.setRow(m.row(),counter);
+		m.setRow(m.rows(),counter);
 		m.checkValidity();
 	}
 
@@ -361,8 +361,8 @@ private:
 		const SparseMatrixType& Bmatrix = B();
 		const DataType& dataPrev = *dataPrevPtr;
 
-		assert(symmC.split()==0 || symmC.size()/symmC.split()==dataPrev[0].row());
-		assert(Btranspose.row()==symmC.size());
+		assert(symmC.split()==0 || symmC.size()/symmC.split()==dataPrev[0].rows());
+		assert(Btranspose.rows()==symmC.size());
 		assert(dataPrev.size()<=h.n_col());
 
 		for (int kb=Bmatrix.getRowPtr(alm2);kb<Bmatrix.getRowPtr(alm2+1);kb++) {
@@ -373,7 +373,7 @@ private:
 			for (SizeType blm1=0;blm1<dataPrev.size();blm1++) {
 				const OperatorType& wOp = h(blm2,blm1);
 				const SparseMatrixType& w = wOp.matrix();
-				if (w.row()==0) continue;
+				if (w.rows()==0) continue;
 				RealType fermionSign = 1.0;
 				for (int k=w.getRowPtr(sigmalm1);k<w.getRowPtr(sigmalm1+1);k++) {
 					SizeType sigmaplm1 = w.getCol(k);
@@ -419,8 +419,8 @@ private:
 		const SparseMatrixType& Bmatrix = B();
 
 		assert(symmC.split()==0 ||
-		       symmC.size()==dataPrev[0].row());
-		assert(Btranspose.col()==symmC.size());
+		       symmC.size()==dataPrev[0].rows());
+		assert(Btranspose.cols()==symmC.size());
 		assert(dataPrev.size()<=h.n_row());
 
 		for (int kb=Bmatrix.getRowPtr(alm2);kb<Bmatrix.getRowPtr(alm2+1);kb++) {
@@ -431,7 +431,7 @@ private:
 			for (SizeType blm1=0;blm1<dataPrev.size();blm1++) {
 				const OperatorType& wOp = h(blm2,blm1);
 				const SparseMatrixType& w = wOp.matrix();
-				if (w.row()==0) continue;
+				if (w.rows()==0) continue;
 				RealType fermionSign = 1.0;
 				for (int k=w.getRowPtr(sigma);k<w.getRowPtr(sigma+1);k++) {
 					SizeType sigmap = w.getCol(k);
@@ -481,7 +481,7 @@ private:
 
 		const SparseMatrixType& Bmatrix = B();
 
-		assert(Btranspose.row()==symmC.size());
+		assert(Btranspose.rows()==symmC.size());
 
 		for (int kb=Bmatrix.getRowPtr(alm2);kb<Bmatrix.getRowPtr(alm2+1);kb++) {
 			PairType sigmalm1alm1 = symmC.unpack(Bmatrix.getCol(kb));
@@ -489,7 +489,7 @@ private:
 			assert(sigmalm1alm1.second == 0);
 			const OperatorType& wOp = h(blm2,0);
 			const SparseMatrixType& w = wOp.matrix();
-			if (w.row()==0) continue;
+			if (w.rows()==0) continue;
 			RealType fermionSign = 1.0;
 			for (int k=w.getRowPtr(sigmalm1);k<w.getRowPtr(sigmalm1+1);k++) {
 				SizeType sigmaplm1 = w.getCol(k);

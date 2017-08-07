@@ -131,7 +131,7 @@ public:
 			assert(currentSite<A_.size());
 			A_[currentSite]->move(truncation,v,symmetrySector,symm);
 			std::cout<<"moved A["<<currentSite<<"].row= ";
-			std::cout<<A_[currentSite]->operator()().row()<<"\n";
+			std::cout<<A_[currentSite]->operator()().rows()<<"\n";
 		} else {
 			SizeType siteToSet = nsites_ - 1 - currentSite;
 			assert(siteToSet<nsites_);
@@ -144,7 +144,7 @@ public:
 			}
 			B_[siteToSet]->move(truncation,v,symmetrySector,symm);
 			std::cout<<"moved B["<<(siteToSet)<<"].row= ";
-			std::cout<<B_[siteToSet]->operator()().row()<<"\n";
+			std::cout<<B_[siteToSet]->operator()().rows()<<"\n";
 		}
 	}
 

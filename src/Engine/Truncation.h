@@ -127,14 +127,14 @@ public:
 
 	void matrixRow(SparseMatrixType& m,SizeType cutoff) const
 	{
-		cutoff = std::min(cutoff,m.col());
-		assert(m.col()==perm_.size());
-		SizeType toRemove = m.col()-cutoff;
+		cutoff = std::min(cutoff,m.cols());
+		assert(m.cols()==perm_.size());
+		SizeType toRemove = m.cols()-cutoff;
 		SparseMatrixType newmatrix;
 		permute(newmatrix,m, PERMUTE_COL);
-		SparseMatrixType newdata(m.row(),cutoff);
+		SparseMatrixType newdata(m.rows(),cutoff);
 		SizeType counter = 0;
-		for (SizeType i=0;i<newmatrix.row();i++) {
+		for (SizeType i=0;i<newmatrix.rows();i++) {
 			newdata.setRow(i,counter);
 			for (int k=newmatrix.getRowPtr(i);k<newmatrix.getRowPtr(i+1);k++) {
 				SizeType col = newmatrix.getCol(k);
@@ -144,21 +144,21 @@ public:
 				counter++;
 			}
 		}
-		newdata.setRow(newmatrix.row(),counter);
+		newdata.setRow(newmatrix.rows(),counter);
 		m=newdata;
 		m.checkValidity();
 	}
 
 	void matrixRowCol(SparseMatrixType& m,SizeType cutoff) const
 	{
-		assert(m.row()==m.col());
-		cutoff = std::min(cutoff,m.row());
-		assert(m.col()==perm_.size());
+		assert(m.rows()==m.cols());
+		cutoff = std::min(cutoff,m.rows());
+		assert(m.cols()==perm_.size());
 		SparseMatrixType newmatrix;
 		permute(newmatrix,m,PERMUTE_ROW | PERMUTE_COL);
-		SizeType toRemove = m.col()-cutoff;
+		SizeType toRemove = m.cols()-cutoff;
 		MatrixType dest(cutoff,cutoff);
-		for (SizeType i=0;i<newmatrix.row();i++) {
+		for (SizeType i=0;i<newmatrix.rows();i++) {
 			if (i<toRemove) continue;
 			for (int k=newmatrix.getRowPtr(i);k<newmatrix.getRowPtr(i+1);k++) {
 				SizeType j = newmatrix.getCol(k);
@@ -182,8 +182,8 @@ private:
 	void permute(SparseMatrixType& m,const SparseMatrixType& src,SizeType what) const
 	{
 		const VectorIntegerType& perm = perm_;
-		SizeType row = src.row();
-		MatrixType dest(row,src.col());
+		SizeType row = src.rows();
+		MatrixType dest(row,src.cols());
 		for (SizeType i=0;i<row;i++) {
 			SizeType ind = (what & PERMUTE_ROW) ? perm[i] : i;
 			for (int k=src.getRowPtr(i);k<src.getRowPtr(i+1);k++) {

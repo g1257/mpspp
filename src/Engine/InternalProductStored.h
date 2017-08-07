@@ -99,7 +99,7 @@ public:
 
 			assert(isHermitian(matrixStored_[0],true));
 			PsimagLite::OstringStream msg;
-			msg<<"fullHamiltonian has rank="<<matrixStored_[0].row();
+			msg<<"fullHamiltonian has rank="<<matrixStored_[0].rows();
 			msg<<" nonzeros="<<matrixStored_[0].nonZero();
 			progress_.printline(msg,std::cout);
 			return;
@@ -108,7 +108,7 @@ public:
 		model->fullHamiltonian(matrix2,*modelHelper);
 		rs->transform(matrixStored_[0],matrixStored_[1],matrix2);
 		PsimagLite::OstringStream msg;
-		msg<<" sector="<<matrixStored_[0].row()<<" and sector="<<matrixStored_[1].row();
+		msg<<" sector="<<matrixStored_[0].rows()<<" and sector="<<matrixStored_[1].rows();
 		progress_.printline(msg,std::cout);
 	}
 

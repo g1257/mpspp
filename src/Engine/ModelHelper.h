@@ -112,7 +112,7 @@ public:
 			for (SizeType bl=0;bl<cR.size();bl++) {
 				const OperatorType& wOp =  hamiltonian_(blm1,bl);
 				const SparseMatrixType& w = wOp.matrix();
-				if (w.row()==0) continue;
+				if (w.rows()==0) continue;
 				//				SparseMatrixType w;
 				//				transposeConjugate(w,w1);
 				const SparseMatrixType& r1 = cR(bl);
@@ -188,7 +188,7 @@ public:
 		SizeType counter = 0;
 		assert(hamiltonian_.n_row()>=cL.size());
 		assert(hamiltonian_.n_col()>=cR.size());
-		assert(part_ == PART_RIGHT || symm.left().size() == cL(0).row());
+		assert(part_ == PART_RIGHT || symm.left().size() == cL(0).rows());
 
 		for (SizeType i=0;i<total;i++) {
 			matrix.setRow(i,counter);
