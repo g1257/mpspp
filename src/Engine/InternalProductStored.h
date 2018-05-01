@@ -100,7 +100,7 @@ public:
 			assert(isHermitian(matrixStored_[0],true));
 			PsimagLite::OstringStream msg;
 			msg<<"fullHamiltonian has rank="<<matrixStored_[0].rows();
-			msg<<" nonzeros="<<matrixStored_[0].nonZero();
+			msg<<" nonzeros="<<matrixStored_[0].nonZeros();
 			progress_.printline(msg,std::cout);
 			return;
 		}
