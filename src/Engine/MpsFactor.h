@@ -49,6 +49,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "ProgramGlobals.h"
 #include "RandomForTests.h"
 #include "Sort.h"
+#include "Svd.h"
 
 namespace Mpspp {
 
@@ -182,6 +183,7 @@ private:
 
 				VectorRealType s;
 				MatrixType vt;
+				PsimagLite::Svd<ComplexOrRealType> svd;
 				svd('A',u,s,vt);
 
 				setFinalU(finalU,istart,itotal,jtotal,u);
@@ -242,6 +244,7 @@ private:
 
 				VectorRealType s;
 				MatrixType vt;
+				PsimagLite::Svd<ComplexOrRealType> svd;
 				svd('A',u,s,vt);
 
 				setFinalU(finalV,istart,itotal,jtotal,u);

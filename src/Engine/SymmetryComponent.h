@@ -46,7 +46,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #define SYMMETRY_COMPONENT_H
 
 #include "ProgramGlobals.h"
-#include "IoSimple.h"
+#include "Io/IoSimple.h"
 #include "Sort.h"
 
 namespace Mpspp {

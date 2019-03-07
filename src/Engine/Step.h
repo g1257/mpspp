@@ -246,7 +246,7 @@ private:
 		VectorType initialVector(lanczosHelper.rows());
 		statePredictor_.createRandomVector(initialVector,0,initialVector.size());
 
-		lanczosOrDavidson->computeGroundState(energyTmp,tmpVec,initialVector);
+		lanczosOrDavidson->computeOneState(energyTmp,tmpVec,initialVector,0);
 		if (lanczosOrDavidson) delete lanczosOrDavidson;
 		return energyTmp;
 	}
