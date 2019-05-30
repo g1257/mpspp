@@ -8,8 +8,8 @@
 #include "Matrix.h"
 
 typedef double RealType;
-//typedef std::complex<RealType> ComplexOrRealType;
-typedef RealType ComplexOrRealType;
+typedef std::complex<RealType> ComplexOrRealType;
+//typedef RealType ComplexOrRealType;
 typedef PsimagLite::Concurrency ConcurrencyType;
 typedef PsimagLite::InputNg<Mpspp::InputCheck> InputNgType;
 typedef Mpspp::SymmetryLocal SymmetryLocalType;
@@ -144,16 +144,16 @@ void algoMpoVerticalOnlySvd(const ModelBaseType& model, SizeType maxPower)
 		// were row2 = pack(sigma, tau, vNoSoFat)
 		const SizeType rows2 = matrix2.rows();
 		const SizeType cols2 = matrix2.cols();
-		if (cols2 != cols)
-			throw PsimagLite::RuntimeError("SVD did not preserve squareness\n");
+		const SizeType colsMin = std::min(cols, cols2);
 
 		powers.clear();
-		powers.resize(cols2, cols);
+		powers.resize(colsMin, colsMin);
 		powers.setTo(zero);
 		for (SizeType row2 = 0; row2 < rows2; ++row2) {
 			const PairSizeType sigmatauVnoSoFat = unpack(row2, hilbertSq);
 			div_t sigmatau = div(sigmatauVnoSoFat.first, hilbert);
-			for (SizeType wNoSoFat = 0; wNoSoFat < cols2; ++wNoSoFat) {
+			if (sigmatauVnoSoFat.second >= colsMin) continue;
+			for (SizeType wNoSoFat = 0; wNoSoFat < colsMin; ++wNoSoFat) {
 				powers(wNoSoFat, sigmatauVnoSoFat.second)(sigmatau.rem, sigmatau.quot)
 				        += matrix2(row2, wNoSoFat);
 			}
