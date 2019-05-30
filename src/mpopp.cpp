@@ -8,7 +8,8 @@
 #include "Matrix.h"
 
 typedef double RealType;
-typedef double ComplexOrRealType;
+//typedef std::complex<RealType> ComplexOrRealType;
+typedef RealType ComplexOrRealType;
 typedef PsimagLite::Concurrency ConcurrencyType;
 typedef PsimagLite::InputNg<Mpspp::InputCheck> InputNgType;
 typedef Mpspp::SymmetryLocal SymmetryLocalType;
@@ -28,6 +29,7 @@ typedef PsimagLite::Matrix<ComplexOrRealType> MatrixType;
 typedef PsimagLite::Matrix<MatrixType> MatrixMatrixType;
 typedef PsimagLite::Vector<ComplexOrRealType>::Type VectorType;
 typedef std::pair<SizeType, SizeType> PairSizeType;
+typedef PsimagLite::Vector<RealType>::Type VectorRealType;
 
 SizeType pack(SizeType i, SizeType j, SizeType sizeOfI)
 {
@@ -51,7 +53,7 @@ void toMatrixMatrix(MatrixMatrixType& mm, const MpoFactorType& mpof)
 			mm(i, j) = mpof(i, j).matrix().toDense();
 }
 
-SizeType findKeptSize(const VectorType& s)
+SizeType findKeptSize(const VectorRealType& s)
 {
 	const SizeType n = s.size();
 	for (SizeType i = 0; i < n; ++i)
@@ -86,7 +88,7 @@ void algoMpoVerticalOnlySvd(const ModelBaseType& model, SizeType maxPower)
 		const SizeType nw = w.rows();
 		assert(w.cols() == nw);
 		MatrixType matrix(hilbert*hilbert*nw*np, nw*np);
-		VectorType s;
+		VectorRealType s;
 		MatrixType vt;
 		for (SizeType w1 = 0; w1 < np; ++w1) {
 			for (SizeType v1 = 0; v1 < np; ++v1) {

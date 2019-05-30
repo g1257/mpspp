@@ -61,11 +61,11 @@ public:
 	typedef PsimagLite::CrsMatrix<ComplexOrRealType> SparseMatrixType;
 	typedef std::pair<SparseMatrixType,int> PairType;
 
-	Operator(const SparseMatrixType& m, int f)
+	explicit Operator(const SparseMatrixType& m, int f)
 		:data_(m),fermionSign_(f)
 	{}
 
-	Operator(int  = 0)
+	explicit Operator(int  = 0)
 	{}
 
 	ThisType& operator=(const PairType& pair)

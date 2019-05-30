@@ -109,8 +109,8 @@ public:
 	      hamiltonian_(geometry_.numberOfSites())
 	{
 		// FIXME: CONNECT WITH THE GEOMETRY HERE!!
-		RealType tiip1up = -1.0;
-		RealType tiip1down = 0.0;
+		ComplexOrRealType tiip1up = -1.0;
+		ComplexOrRealType tiip1down = 0.0;
 		SizeType n = hamiltonian_.size();
 		SizeType wdim = 6;
 

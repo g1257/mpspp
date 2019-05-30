@@ -57,11 +57,12 @@ namespace Mpspp {
 		more information.
 		*/
 
-template<typename ComplexOrRealType,typename SymmetryLocalType>
+template<typename ComplexOrRealType_,typename SymmetryLocalType>
 class MpoLocal {
 
 public:
 
+	typedef ComplexOrRealType_ ComplexOrRealType;
 	typedef MpsLocal<ComplexOrRealType,SymmetryLocalType> MpsLocalType;
 	typedef SymmetryHelper<SymmetryLocalType> SymmetryHelperType;
 	typedef typename PsimagLite::Real<ComplexOrRealType>::Type RealType;

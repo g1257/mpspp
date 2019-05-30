@@ -62,36 +62,40 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 */
 
 namespace Mpspp {
+template<typename MpoLocalType,
+         bool = PsimagLite::IsComplexNumber<typename MpoLocalType::ComplexOrRealType>::True>
+class Fill1 {};
 
-template<typename MpoLocalType, typename T>
-class Fill1 {
+template<typename MpoLocalType>
+class Fill1<MpoLocalType, false> {
 
 public:
 
-	static void fill()
+	static void fill(MpoLocalType&, const SizeType)
 	{
 		throw PsimagLite::RuntimeError("Cannot do mode 1 without complex numbers\n");
 	}
 };
 
-template<typename MpoLocalType, typename RealType>
-class Fill1<MpoLocalType, std::complex<RealType> > {
+template<typename MpoLocalType>
+class Fill1<MpoLocalType, true> {
 
 public:
 
 	typedef typename MpoLocalType::MpoFactorType MpoFactorType;
 	typedef typename MpoFactorType::OperatorType OperatorType;
 	typedef typename MpoFactorType::SparseMatrixType SparseMatrixType;
-	typedef typename std::complex<RealType> ComplexOrRealType;
+	typedef typename MpoLocalType::ComplexOrRealType ComplexOrRealType;
 	typedef typename PsimagLite::Matrix<ComplexOrRealType> MatrixType;
+	typedef typename PsimagLite::Real<ComplexOrRealType>::Type RealType;
 
 	static void fill(MpoLocalType& hamiltonian, const SizeType hilbert)
 	{
 		// FIXME: CONNECT WITH THE GEOMETRY HERE!!
-		RealType jx = 0.5;
-		RealType jy = 1.0/3.0;
-		RealType jz = 0.2;
-		RealType h = 1.0;
+		ComplexOrRealType jx = 0.5;
+		ComplexOrRealType jy = 1.0/3.0;
+		ComplexOrRealType jz = 0.2;
+		ComplexOrRealType h = 1.0;
 		SizeType n = hamiltonian.size();
 		SizeType wdim = 5;
 
@@ -147,7 +151,7 @@ public:
 		mright(3,0) = jy*msy;
 		mright(2,0) = jz*msz;
 		mright(1,0) = identity;
-		mright(0,0) = h*sz;
+		mright(0,0) = h*msz;
 		hamiltonian(n-1)=mright;
 	}
 
@@ -196,7 +200,7 @@ public:
 		if (mp_.mode == 0) {
 			fill0();
 		} else {
-			Fill1<MpoLocalType, ComplexOrRealType>::fill();
+			Fill1<MpoLocalType>::fill(hamiltonian_, hilbert_);
 		}
 	}
 
@@ -240,9 +244,9 @@ private:
 	void fill0()
 	{
 		// FIXME: CONNECT WITH THE GEOMETRY HERE!!
-		RealType J = 1.0;
-		RealType Jz = 1.0;
-		RealType Jover2 = 0.5*J;
+		ComplexOrRealType J = 1.0;
+		ComplexOrRealType Jz = 1.0;
+		ComplexOrRealType Jover2 = 0.5*J;
 		SizeType n = hamiltonian_.size();
 		SizeType wdim = 5;
 

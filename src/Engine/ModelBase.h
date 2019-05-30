@@ -71,7 +71,7 @@ public:
 	typedef typename MpsLocalType::VectorIntegerType VectorIntegerType;
 	typedef typename SymmetryLocalType::SymmetryFactorType SymmetryFactorType;
 	typedef typename ParametersSolverType::RealType RealType;
-	typedef typename PsimagLite::Vector<RealType>::Type VectorType;
+	typedef typename PsimagLite::Vector<ComplexOrRealType>::Type VectorType;
 	typedef ContractedLocal<MpoLocalType> ContractedLocalType;
 	typedef ModelHelper<ContractedLocalType> ModelHelperType;
 	typedef typename ModelHelperType::SparseMatrixType SparseMatrixType;
