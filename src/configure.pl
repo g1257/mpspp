@@ -33,40 +33,14 @@ if (defined($arg) and -r "$arg" and $arg ne "Config.make") {
 
 my %provenanceDriver = (name => 'Provenance', aux => 1);
 my %progGlobalsDriver = (name => 'ProgramGlobals', aux => 1);
-#my %restartDriver = (name => 'RestartStruct', aux => 1);
-#my %finiteLoopDriver = (name => 'FiniteLoop', aux => 1);
-#my %utilsDriver = (name => 'Utils', aux => 1);
-#my %su2RelatedDriver = (name => 'Su2Related', aux => 1);
-#my %toolboxDriver = (name => 'toolboxdmrg',
-#                     dotos => 'toolboxdmrg.o ProgramGlobals.o Provenance.o Utils.o');
-my $dotos = "Provenance.o";
-#my %observeDriver = (name => 'observe', dotos => $dotos);
-
-my @drivers = (\%provenanceDriver,\%progGlobalsDriver);
-#\%restartDriver,\%finiteLoopDriver,\%utilsDriver,
-#\%observeDriver,\%toolboxDriver);
-
-$dotos = "mpspp.o Provenance.o"; # RestartStruct.o FiniteLoop.o Utils.o ";
-$dotos .= " ProgramGlobals.o";
-
-#my $templates = DmrgDriver::createTemplates();
-
-#for (my $i = 0; $i < $templates; ++$i) {
-#	my $name = "DmrgDriver$i";
-#	my %dmrgDriver = (name => $name, aux => 1);
-#	push @drivers,\%dmrgDriver;
-#	$dotos .= " $name.o ";
-#}
-
-my %dmrgMain = (name => 'mpspp', dotos => $dotos);
-
-push @drivers,\%dmrgMain;
+my %mpspp = (name => 'mpspp', dotos => "mpspp.o Provenance.o ProgramGlobals.o");
+my %mpopp = (name => 'mpopp', dotos => "mpopp.o Provenance.o ProgramGlobals.o");
+my @drivers = (\%provenanceDriver,\%progGlobalsDriver, \%mpspp, \%mpopp);
 
 createMakefile();
 
 sub createMakefile
 {
-#	unlink("Engine/Version.h");
 	Make::backupMakefile();
 	if (!(-r "Config.make")) {
 		my $cmd = "cp Config.make.sample Config.make";

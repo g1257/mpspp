@@ -76,7 +76,6 @@ class HeisenbergSpinOneHalf : public ModelBase<ParametersSolverType,
     InputValidatorType,
     SymmetryLocalType,
     GeometryType> ModelBaseType;
-
     typedef typename ModelBaseType::MpoLocalType MpoLocalType;
     typedef typename MpoLocalType::MpoFactorType MpoFactorType;
     typedef typename ModelBaseType::SparseMatrixType SparseMatrixType;
@@ -87,7 +86,6 @@ class HeisenbergSpinOneHalf : public ModelBase<ParametersSolverType,
     typedef PsimagLite::Matrix<ComplexOrRealType> MatrixType;
     typedef typename MpoLocalType::MpsLocalType MpsLocalType;
     typedef typename MpsLocalType::VectorIntegerType VectorIntegerType;
-
     typedef ParametersHeisenbergSpinOneHalf<RealType> ParametersModelType;
     typedef typename MpoFactorType::OperatorType OperatorType;
 

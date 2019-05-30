@@ -93,9 +93,9 @@ public:
 		return data_(i,j);
 	}
 
-	size_t n_row() const { return data_.n_row(); }
+	size_t rows() const { return data_.rows(); }
 
-	size_t n_col() const { return data_.n_col(); }
+	size_t cols() const { return data_.cols(); }
 
 	bool operator==(const ThisType& other) const
 	{
