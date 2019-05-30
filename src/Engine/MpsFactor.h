@@ -154,7 +154,7 @@ private:
 	{
 		assert(aOrB_ == TYPE_A);
 
-        if (m.n_col() == 1) {
+        if (m.cols() == 1) {
             fullMatrixToCrsMatrix(data_,m);
             return;
         }
@@ -163,7 +163,7 @@ private:
 		const SymmetryComponentType& nonSummed = symm.right();
 
 		MatrixType finalU(summed.size(),summed.size());
-        assert(m.n_col() == nonSummed.size());
+        assert(m.cols() == nonSummed.size());
 		assert(m.rows() == summed.size());
 
 		truncation.setSize(summed.size());
@@ -224,7 +224,7 @@ private:
 		const SymmetryComponentType& nonSummed = symm.left();
 
 		MatrixType finalV(summed.size(),summed.size());
-        assert(m.n_col() == nonSummed.size());
+        assert(m.cols() == nonSummed.size());
 		assert(m.rows() == summed.size());
 
 		truncation.setSize(summed.size());
@@ -283,7 +283,7 @@ private:
 	{
 		SizeType n = u.rows();
 		SizeType min = std::min(itotal,jtotal);
-		assert(u.rows()==u.n_col());
+		assert(u.rows()==u.cols());
 		for (SizeType i=0;i<n;i++) {
 			for (SizeType j=0;j<min;j++) {
 				finalU(i+istart,j+istart) = u(i,j);
@@ -310,7 +310,7 @@ private:
 	bool isNormalized(const MatrixType& m) const
 	{
 		SizeType rows = m.rows();
-		SizeType cols = m.n_col();
+		SizeType cols = m.cols();
 		SizeType c = 0;
 		for (SizeType i=0;i<cols;i++) {
 			for (SizeType j=0;j<cols;j++) {
@@ -332,7 +332,7 @@ private:
 						 const MatrixType& m) const
 	{
 		SizeType rows = m.rows();
-		SizeType cols = m.n_col();
+		SizeType cols = m.cols();
 		SizeType c = 0;
 		for (SizeType i=0;i<cols;++i) {
 			ComplexOrRealType sum = 0;
@@ -351,7 +351,7 @@ private:
 	void resizeU(MatrixType& m,
 				 SizeType smallSize)
 	{
-		if (m.n_col() == smallSize) return;
+		if (m.cols() == smallSize) return;
 		SizeType rows = m.rows();
 		VectorSizeType vcols(smallSize,0);
 		MatrixType tmp(rows,smallSize);

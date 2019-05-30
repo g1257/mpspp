@@ -109,7 +109,7 @@ public:
 		} else {
 			assert(AorB.type()==MpsFactorType::TYPE_A);
 
-			data_.resize(h.n_col());
+			data_.resize(h.cols());
 			moveLeft(AorB,h,ptr,symmHelper,siteForSymm);
 		}
 	}
@@ -232,9 +232,9 @@ private:
 		assert(A.type()==MpsFactorType::TYPE_A);
 		SparseMatrixType Atranspose;
 		transposeConjugate(Atranspose,A());
-		if (data_.size()!=h.n_col())
-			data_.resize(h.n_col());
-		assert(data_.size()==h.n_col());
+		if (data_.size()!=h.cols())
+			data_.resize(h.cols());
+		assert(data_.size()==h.cols());
 		for (SizeType b1=0;b1<data_.size();b1++)
 			moveLeft(data_[b1],A,Atranspose,b1,h,dataPrev,symm,currentSite);
 	}
@@ -363,7 +363,7 @@ private:
 
 		assert(symmC.split()==0 || symmC.size()/symmC.split()==dataPrev[0].rows());
 		assert(Btranspose.rows()==symmC.size());
-		assert(dataPrev.size()<=h.n_col());
+		assert(dataPrev.size()<=h.cols());
 
 		for (int kb=Bmatrix.getRowPtr(alm2);kb<Bmatrix.getRowPtr(alm2+1);kb++) {
 			PairType sigmalm1alm1 = symmC.unpack(Bmatrix.getCol(kb));
