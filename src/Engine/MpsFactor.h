@@ -164,7 +164,7 @@ private:
 
 		MatrixType finalU(summed.size(),summed.size());
         assert(m.n_col() == nonSummed.size());
-		assert(m.n_row() == summed.size());
+		assert(m.rows() == summed.size());
 
 		truncation.setSize(summed.size());
 		for (SizeType i=0;i<summed.partitions()-1;i++) {
@@ -208,7 +208,7 @@ private:
 	{
 		assert(aOrB_ == TYPE_B);
 
-        if (m.n_row() == 1) {
+        if (m.rows() == 1) {
 			SizeType leftSize = symm.left().split();
 			SizeType rightSize = symm.left().split();
 			MatrixType b(leftSize,rightSize);
@@ -225,7 +225,7 @@ private:
 
 		MatrixType finalV(summed.size(),summed.size());
         assert(m.n_col() == nonSummed.size());
-		assert(m.n_row() == summed.size());
+		assert(m.rows() == summed.size());
 
 		truncation.setSize(summed.size());
 		for (SizeType i=0;i<summed.partitions()-1;i++) {
@@ -281,9 +281,9 @@ private:
 				   SizeType jtotal,
 				   const MatrixType& u) const
 	{
-		SizeType n = u.n_row();
+		SizeType n = u.rows();
 		SizeType min = std::min(itotal,jtotal);
-		assert(u.n_row()==u.n_col());
+		assert(u.rows()==u.n_col());
 		for (SizeType i=0;i<n;i++) {
 			for (SizeType j=0;j<min;j++) {
 				finalU(i+istart,j+istart) = u(i,j);
@@ -309,7 +309,7 @@ private:
 
 	bool isNormalized(const MatrixType& m) const
 	{
-		SizeType rows = m.n_row();
+		SizeType rows = m.rows();
 		SizeType cols = m.n_col();
 		SizeType c = 0;
 		for (SizeType i=0;i<cols;i++) {
@@ -331,7 +331,7 @@ private:
 	void findNonZeroCols(VectorSizeType& vcols,
 						 const MatrixType& m) const
 	{
-		SizeType rows = m.n_row();
+		SizeType rows = m.rows();
 		SizeType cols = m.n_col();
 		SizeType c = 0;
 		for (SizeType i=0;i<cols;++i) {
@@ -352,7 +352,7 @@ private:
 				 SizeType smallSize)
 	{
 		if (m.n_col() == smallSize) return;
-		SizeType rows = m.n_row();
+		SizeType rows = m.rows();
 		VectorSizeType vcols(smallSize,0);
 		MatrixType tmp(rows,smallSize);
 		findNonZeroCols(vcols,m);

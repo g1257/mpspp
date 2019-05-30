@@ -103,7 +103,7 @@ public:
 		if (leftOrRight_==PART_RIGHT) {
 			assert(AorB.type()==MpsFactorType::TYPE_B);
 
-			data_.resize(h.n_row());
+			data_.resize(h.rows());
 
 			moveRight(AorB,h,ptr,symmHelper,siteForSymm,true);
 		} else {
@@ -186,7 +186,7 @@ private:
 				SizeType a1 = a1sigma2.first;
 				SizeType sigma2 = a1sigma2.second;
 
-				for (SizeType b1=0;b1<h.n_row();b1++) {
+				for (SizeType b1=0;b1<h.rows();b1++) {
 					const OperatorType& wOp = h(b1,b);
 					const SparseMatrixType& w = wOp.matrix();
 					if (w.rows()==0) continue;
@@ -250,9 +250,9 @@ private:
 		assert(B.type()==MpsFactorType::TYPE_B);
 		SparseMatrixType Btranspose;
 		transposeConjugate(Btranspose,B());
-		if (h.n_row()!=data_.size())
-			data_.resize(h.n_row());
-		assert(h.n_row()==data_.size());
+		if (h.rows()!=data_.size())
+			data_.resize(h.rows());
+		assert(h.rows()==data_.size());
 		for (SizeType blm2=0;blm2<data_.size();blm2++)
 			moveRight(data_[blm2],blm2,B,Btranspose,h,dataPrev,symm,siteForSymm,isInitialGuess);
 	}
@@ -421,7 +421,7 @@ private:
 		assert(symmC.split()==0 ||
 		       symmC.size()==dataPrev[0].rows());
 		assert(Btranspose.cols()==symmC.size());
-		assert(dataPrev.size()<=h.n_row());
+		assert(dataPrev.size()<=h.rows());
 
 		for (int kb=Bmatrix.getRowPtr(alm2);kb<Bmatrix.getRowPtr(alm2+1);kb++) {
 

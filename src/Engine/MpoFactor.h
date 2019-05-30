@@ -78,7 +78,7 @@ public:
 
 	const OperatorType& operator()(size_t i,size_t j) const
 	{
-		assert(i<n_row() && j<n_col());
+		assert(i<rows() && j<n_col());
 		return data_(i,j);
 	}
 
@@ -89,7 +89,7 @@ public:
 
 	OperatorType& operator()(size_t i,size_t j)
 	{
-		assert(i<n_row() && j<n_col());
+		assert(i<rows() && j<n_col());
 		return data_(i,j);
 	}
 

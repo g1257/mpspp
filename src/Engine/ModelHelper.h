@@ -186,7 +186,7 @@ public:
 														 ProgramGlobals::PART_RIGHT);
 		VectorType v(total,0);
 		SizeType counter = 0;
-		assert(hamiltonian_.n_row()>=cL.size());
+		assert(hamiltonian_.rows()>=cL.size());
 		assert(hamiltonian_.n_col()>=cR.size());
 		assert(part_ == PART_RIGHT || symm.left().size() == cL(0).rows());
 

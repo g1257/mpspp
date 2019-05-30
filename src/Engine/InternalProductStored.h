@@ -88,7 +88,7 @@ public:
 				MatrixType fullm;
 				crsMatrixToFullMatrix(fullm,matrixStored_[0]);
 				if (PsimagLite::isZero(fullm)) std::cerr<<"Matrix is zero\n";
-				if (fullm.n_row()>40) {
+				if (fullm.rows()>40) {
 					printNonZero(fullm,std::cerr);
 				} else {
 					std::cout<<fullm;
