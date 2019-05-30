@@ -58,10 +58,11 @@ struct ParametersHeisenbergSpinOneHalf {
 	template<typename IoInputType>
 	ParametersHeisenbergSpinOneHalf(IoInputType& io)
 	{
+		io.readline(mode, "Mode=");
 	}
 
 	// target number of electrons  in the system
-	int nOfElectrons;
+	SizeType mode;
 };
 
 //! Function that prints model parameters to stream os

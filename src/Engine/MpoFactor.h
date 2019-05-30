@@ -62,15 +62,14 @@ namespace Mpspp {
 template<typename RealType,typename ComplexOrRealType>
 class MpoFactor {
 
-	typedef MpoFactor<RealType,ComplexOrRealType> ThisType;
-	typedef Operator<ComplexOrRealType> OperatorType_;
-	typedef typename OperatorType_::SparseMatrixType SparseMatrixType;
-	typedef PsimagLite::Matrix<OperatorType_> MatrixType;
-
 	static const int MAX_SITES = ProgramGlobals::MAX_SITES;
 
 public:
 
+	typedef MpoFactor<RealType,ComplexOrRealType> ThisType;
+	typedef Operator<ComplexOrRealType> OperatorType_;
+	typedef typename OperatorType_::SparseMatrixType SparseMatrixType;
+	typedef PsimagLite::Matrix<OperatorType_> MatrixType;
 	typedef OperatorType_ OperatorType;
 
 	MpoFactor(size_t wdim1,size_t wdim2)
