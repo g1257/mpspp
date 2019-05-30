@@ -75,7 +75,7 @@ void algoMpoVerticalOnlySvd(const ModelBaseType& model, SizeType maxPower)
 	MatrixType zero(hilbert, hilbert);
 	zero.setTo(0.0);
 	for (SizeType n = 1; n < maxPower; ++n) {
-		std::cout<<n<<" "<<powers.rows()<<"\n";
+		std::cout<<n<<" "<<powers.cols()<<"\n";
 
 		// new(wfat, vfat)_{sigma, tau} = \sum_t powers(w1, v1)_{sigma, t} * w(w2, v2)_{t, tau}
 		// where wfat = pack(w1, w2)
@@ -83,15 +83,15 @@ void algoMpoVerticalOnlySvd(const ModelBaseType& model, SizeType maxPower)
 		// and set matrix1(row1, vfat) = new(wfat, vfat)_{sigma, tau}
 		// where row1 = pack(wfat, sigma, tau)
 		MatrixType tmp(hilbert, hilbert);
-		const SizeType np = powers.rows();
-		assert(powers.cols() == np);
+		const SizeType prows = powers.rows();
+		const SizeType pcols = powers.cols();
 		const SizeType nw = w.rows();
 		assert(w.cols() == nw);
-		MatrixType matrix(hilbert*hilbert*nw*np, nw*np);
+		MatrixType matrix(hilbert*hilbert*nw*prows, nw*pcols);
 		VectorRealType s;
 		MatrixType vt;
-		for (SizeType w1 = 0; w1 < np; ++w1) {
-			for (SizeType v1 = 0; v1 < np; ++v1) {
+		for (SizeType w1 = 0; w1 < prows; ++w1) {
+			for (SizeType v1 = 0; v1 < pcols; ++v1) {
 				const MatrixType& p = powers(w1, v1);
 				for (SizeType w2 = 0; w2 < nw; ++w2) {
 					const SizeType wfat = pack(w2, w1, nw);
@@ -115,48 +115,24 @@ void algoMpoVerticalOnlySvd(const ModelBaseType& model, SizeType maxPower)
 		vt.clear();
 		svd('A', matrix, s, vt);
 		const SizeType kept = findKeptSize(s);
-		matrix.resize(matrix.rows(), kept);
+		const SizeType rows = matrix.rows();
+		matrix.resize(rows, kept);
 
 		// and end up with U1(pack(wfat, sigma, tau), vNoSoFat)
 		// where vNoSoFat is truncated to non-zeros of S1
-		// now we set matrix2(row2, wfat) = U1(pack(wfat, sigma, tau), vNoSoFat)
-		// were row2 = pack(sigma, tau, vNoSoFat)
-		const SizeType rows = matrix.rows();
-		const SizeType cols = matrix.cols();
-		MatrixType matrix2(cols*hilbertSq, rows);
-		for (SizeType rowOld = 0; rowOld < rows; ++rowOld) {
-			const PairSizeType sigmatauWfat = unpack(rowOld, hilbertSq);
-			for (SizeType vNoSoFat = 0; vNoSoFat < cols; ++vNoSoFat) {
-				const SizeType row2 = pack(sigmatauWfat.first, vNoSoFat, hilbertSq);
-				matrix2(row2, sigmatauWfat.second) += matrix(rowOld, vNoSoFat);
-			}
-		}
 
-		// and then we SVD  matrix2(row, wfat) = U2 S2 V2^\dagger
-		vt.clear();
-		svd('A', matrix2, s, vt);
-		const SizeType kept2 = findKeptSize(s);
-		matrix2.resize(matrix2.rows(), kept2);
-
-		// and end up with U2(pack(sigma, tau, vNoSoFat), wNoSoFat)
-		// where wNoSoFat is truncated to non-zeros of S2
-		// finally we set powers(wNoSoFat,  vNoSoFat)_{sigma, tau} = U2(row2, wNoSoFat)
-		// were row2 = pack(sigma, tau, vNoSoFat)
-		const SizeType rows2 = matrix2.rows();
-		const SizeType cols2 = matrix2.cols();
-		const SizeType colsMin = std::min(cols, cols2);
+		// finally we set powers(wfat,  vNoSoFat)_{sigma, tau} = U1(row1, vNoSoFat)
+		// were row1 = pack(wfat, sigma, tau)
 
 		powers.clear();
-		powers.resize(colsMin, colsMin);
+		powers.resize(nw*prows, kept);
 		powers.setTo(zero);
-		for (SizeType row2 = 0; row2 < rows2; ++row2) {
-			const PairSizeType sigmatauVnoSoFat = unpack(row2, hilbertSq);
-			div_t sigmatau = div(sigmatauVnoSoFat.first, hilbert);
-			if (sigmatauVnoSoFat.second >= colsMin) continue;
-			for (SizeType wNoSoFat = 0; wNoSoFat < colsMin; ++wNoSoFat) {
-				powers(wNoSoFat, sigmatauVnoSoFat.second)(sigmatau.rem, sigmatau.quot)
-				        += matrix2(row2, wNoSoFat);
-			}
+		for (SizeType row1 = 0; row1 < rows; ++row1) {
+			const PairSizeType sigmatauWfat = unpack(row1, hilbertSq);
+			const div_t sigmatau = div(sigmatauWfat.first, hilbert);
+			for (SizeType vNoSoFat = 0; vNoSoFat < kept; ++vNoSoFat)
+				powers(sigmatauWfat.second, vNoSoFat)(sigmatau.rem, sigmatau.quot)
+				        += matrix(row1, vNoSoFat);
 		}
 	}
 }
