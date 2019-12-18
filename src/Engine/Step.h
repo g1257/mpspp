@@ -320,11 +320,12 @@ private:
 	SizeType getQuantumSector(const VectorIntegerType& targetQuantumNumbers,
 							  SizeType direction) const
 	{
-		PsimagLite::OstringStream msg;
+		PsimagLite::OstringStream msgg(std::cout.precision());
+		PsimagLite::OstringStream::OstringStreamType& msg = msgg();
 		msg<<"Integer target quantum numbers are: ";
 		for (SizeType ii=0;ii<targetQuantumNumbers.size();ii++)
 			msg<<targetQuantumNumbers[ii]<<" ";
-		progress_.printline(msg,std::cout);
+		progress_.printline(msgg, std::cout);
 		return encodeQuantumNumber(targetQuantumNumbers);
 	}
 

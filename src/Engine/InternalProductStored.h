@@ -98,18 +98,21 @@ public:
 			}
 
 			assert(isHermitian(matrixStored_[0],true));
-			PsimagLite::OstringStream msg;
+			PsimagLite::OstringStream msgg(std::cout.precision());
+			PsimagLite::OstringStream::OstringStreamType& msg = msgg();
 			msg<<"fullHamiltonian has rank="<<matrixStored_[0].rows();
 			msg<<" nonzeros="<<matrixStored_[0].nonZeros();
-			progress_.printline(msg,std::cout);
+			progress_.printline(msgg, std::cout);
 			return;
 		}
+
 		SparseMatrixType matrix2;
 		model->fullHamiltonian(matrix2,*modelHelper);
 		rs->transform(matrixStored_[0],matrixStored_[1],matrix2);
-		PsimagLite::OstringStream msg;
+		PsimagLite::OstringStream msgg(std::cout.precision());
+		PsimagLite::OstringStream::OstringStreamType& msg = msgg();
 		msg<<" sector="<<matrixStored_[0].rows()<<" and sector="<<matrixStored_[1].rows();
-		progress_.printline(msg,std::cout);
+		progress_.printline(msgg, std::cout);
 	}
 
 	SizeType rows() const { return matrixStored_[pointer_].rows(); }

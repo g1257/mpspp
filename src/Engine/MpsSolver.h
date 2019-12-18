@@ -160,14 +160,15 @@ private:
 					   SizeType center,
 					   const PsimagLite::String& direction) const
 	{
-		PsimagLite::OstringStream msg;
+		PsimagLite::OstringStream msgg(std::cout.precision());
+		PsimagLite::OstringStream::OstringStreamType& msg = msgg();
 		msg<<"center="<<center<<" direction="<<direction;
 		SizeType nsites = model_.geometry().numberOfSites();
 		SizeType middle = static_cast<SizeType>(nsites/2);
 		SizeType siteForSymm = (center < middle) ? center : nsites - 1 - center;
 		msg<<" left space= "<<symm(siteForSymm).left().size();
 		msg<<" right space="<<symm(siteForSymm).right().size()<<"\n";
-		progress_.printline(msg,std::cout);
+		progress_.printline(msgg, std::cout);
 	}
 
 	const ParametersSolverType& solverParams_;
